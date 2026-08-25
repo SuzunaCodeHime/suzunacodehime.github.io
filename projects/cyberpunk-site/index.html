@@ -7,11 +7,11 @@
 <title>NEON CITY // 赛博朋克</title>
 <style>
   :root {
-    --cyan: #e2718f;
-    --magenta: #ad5f86;
-    --yellow: #b07b32;
-    --purple: #9d8cd8;
-    --bg: #fdf4f7;
+    --cyan: #cb4042;
+    --magenta: #a3813f;
+    --yellow: #a3813f;
+    --purple: #7d94b5;
+    --bg: #f6f2e9;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,7 +20,7 @@
 
   body {
     background: var(--bg);
-    color: #5c4f56;
+    color: #4a4438;
     font-family: "Courier New", "SF Mono", Menlo, monospace;
     overflow-x: hidden;
     min-height: 100vh;
@@ -31,8 +31,8 @@
     position: fixed;
     inset: -100% -50% 0 -50%;
     background-image:
-      linear-gradient(rgba(226, 113, 143, 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(226, 113, 143, 0.12) 1px, transparent 1px);
+      linear-gradient(rgba(203, 64, 66, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(203, 64, 66, 0.12) 1px, transparent 1px);
     background-size: 44px 44px;
     transform: perspective(500px) rotateX(45deg);
     transform-origin: center top;
@@ -80,15 +80,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 18px clamp(16px, 4vw, 40px);
-    border-bottom: 1px solid rgba(226, 113, 143, 0.25);
+    border-bottom: 1px solid rgba(203, 64, 66, 0.25);
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(253, 244, 247, 0.8);
+    background: rgba(246, 242, 233, 0.8);
     transition: backdrop-filter 0.3s, background 0.3s;
   }
   body.scrolled header {
-    background: rgba(253, 244, 247, 0.65);
+    background: rgba(246, 242, 233, 0.65);
     backdrop-filter: blur(10px);
   }
 
@@ -168,7 +168,7 @@
     margin-top: 18px;
     font-size: clamp(0.95rem, 2.5vw, 1.05rem);
     color: var(--yellow);
-    text-shadow: 0 0 8px rgba(176, 123, 50, 0.6);
+    text-shadow: 0 0 8px rgba(163, 129, 63, 0.6);
     letter-spacing: 3px;
   }
   .subtitle::before { content: "> "; color: var(--magenta); }
@@ -183,9 +183,9 @@
 
   .panel {
     margin-top: 50px;
-    border: 1px solid rgba(226, 113, 143, 0.4);
+    border: 1px solid rgba(203, 64, 66, 0.4);
     background: rgba(255, 255, 255, 0.55);
-    box-shadow: 0 0 18px rgba(226, 113, 143, 0.15), inset 0 0 40px rgba(226, 113, 143, 0.05);
+    box-shadow: 0 0 18px rgba(203, 64, 66, 0.15), inset 0 0 40px rgba(203, 64, 66, 0.05);
     padding: 26px;
     position: relative;
     content-visibility: auto;
@@ -216,7 +216,7 @@
     margin-top: 40px;
   }
   .card {
-    border: 1px solid rgba(157, 140, 216, 0.5);
+    border: 1px solid rgba(125, 148, 181, 0.5);
     background: rgba(255, 255, 255, 0.5);
     padding: 20px;
     cursor: default;
@@ -225,10 +225,10 @@
   .card:hover, .card:focus-visible {
     transform: translateY(-6px);
     border-color: var(--cyan);
-    box-shadow: 0 0 22px rgba(226, 113, 143, 0.2), 0 12px 28px rgba(120, 80, 95, 0.14);
+    box-shadow: 0 0 22px rgba(203, 64, 66, 0.2), 0 12px 28px rgba(120, 80, 95, 0.14);
   }
   .card .num { color: var(--yellow); font-size: 0.8rem; letter-spacing: 2px; }
-  .card h3 { color: var(--cyan); margin: 10px 0 8px; text-shadow: 0 0 8px rgba(226, 113, 143, 0.5); }
+  .card h3 { color: var(--cyan); margin: 10px 0 8px; text-shadow: 0 0 8px rgba(203, 64, 66, 0.5); }
   .card p { font-size: 0.9rem; color: #877a81; line-height: 1.7; }
 
   /* ---- 终端 ---- */
@@ -236,7 +236,7 @@
     margin-top: 50px;
     background: #fffdfa;
     border: 1px solid var(--cyan);
-    box-shadow: 0 0 25px rgba(226, 113, 143, 0.25);
+    box-shadow: 0 0 25px rgba(203, 64, 66, 0.25);
     padding: 20px 24px;
     font-size: 0.92rem;
     line-height: 1.9;
@@ -246,7 +246,7 @@
   .terminal .bar {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(226, 113, 143, 0.3);
+    border-bottom: 1px solid rgba(203, 64, 66, 0.3);
     padding-bottom: 8px;
     margin-bottom: 14px;
     color: var(--yellow);
@@ -271,7 +271,7 @@
   footer {
     text-align: center;
     padding: 30px;
-    border-top: 1px solid rgba(173, 95, 134, 0.3);
+    border-top: 1px solid rgba(163, 129, 63, 0.3);
     color: #9c8d94;
     font-size: 0.8rem;
     letter-spacing: 2px;
@@ -296,7 +296,7 @@
   .btn:hover {
     background: var(--magenta);
     color: #fff;
-    box-shadow: 0 0 30px rgba(173, 95, 134, 0.7);
+    box-shadow: 0 0 30px rgba(163, 129, 63, 0.7);
   }
 
   /* ---- 降低动态效果偏好 ---- */

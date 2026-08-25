@@ -6,10 +6,10 @@
     <title>课堂点名抽取系统</title>
     <style>
         :root {
-            --primary: #4a90e2;
-            --accent: #f39c12;
-            --danger: #e74c3c;
-            --bg: #f8f9fa;
+            --primary: #cb4042;
+            --accent: #a3813f;
+            --danger: #c04b47;
+            --bg: #fffdf8;
         }
 
         body {
@@ -31,13 +31,13 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        h2 { text-align: center; color: #2c3e50; margin-top: 0; }
+        h2 { text-align: center; color: #26324e; margin-top: 0; }
         .input-section { margin-bottom: 20px; }
-        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; color: #555; }
+        .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; color: #6b6560; }
         .count-tag { background: var(--primary); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; }
-        select, textarea, input[type="number"] { width: 100%; padding: 12px; border: 2px solid #edf2f7; border-radius: 10px; font-size: 1rem; box-sizing: border-box; transition: all 0.3s; }
+        select, textarea, input[type="number"] { width: 100%; padding: 12px; border: 2px solid #f6f2e9; border-radius: 10px; font-size: 1rem; box-sizing: border-box; transition: all 0.3s; }
         textarea { height: 120px; resize: none; line-height: 1.6; }
-        select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1); }
+        select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(203, 64, 66, 0.12); }
         .control-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 15px; margin-top: 15px; }
         
         button { padding: 12px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.1s, background 0.3s; }
@@ -49,8 +49,8 @@
         .display-area { 
             height: 180px; 
             margin: 20px 0; 
-            background: #fdfdfd; 
-            border: 2px dashed #cbd5e0; 
+            background: #fffdf8; 
+            border: 2px dashed #ded7c6; 
             border-radius: 15px; 
             display: flex; 
             justify-content: center; 
@@ -72,18 +72,18 @@
         /* 最终显示名字的样式 - 调大了字号 */
         .result-item { 
             display: inline-block; 
-            background: #eef2f7; 
+            background: #f6f2e9; 
             margin: 8px; 
             padding: 10px 25px; 
             border-radius: 12px; 
             border-left: 6px solid var(--primary); 
             font-weight: 900; 
             font-size: 3.5rem;  /* 这里修改字号 */
-            color: #2c3e50;
+            color: #26324e;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        .history { font-size: 0.9rem; color: #718096; border-top: 1px solid #edf2f7; padding-top: 15px; }
+        .history { font-size: 0.9rem; color: #8b8577; border-top: 1px solid #f6f2e9; padding-top: 15px; }
         #historyList { max-height: 100px; overflow-y: auto; margin-top: 5px; line-height: 1.6; }
     </style>
 </head>
@@ -115,7 +115,7 @@
     </div>
 
     <div class="display-area" id="displayBox">
-        <div style="color: #a0aec0;">等待抽取</div>
+        <div style="color: #b3ab9c;">等待抽取</div>
     </div>
 
     <div class="history" id="historyBox">
@@ -154,7 +154,7 @@
         
         updateCount();
         updateHistoryDisplay();
-        document.getElementById('displayBox').innerHTML = '<div style="color: #a0aec0;">等待抽取</div>';
+        document.getElementById('displayBox').innerHTML = '<div style="color: #b3ab9c;">等待抽取</div>';
     }
 
     function updateCount() {

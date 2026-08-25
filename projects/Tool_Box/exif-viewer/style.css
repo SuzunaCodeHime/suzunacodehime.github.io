@@ -1,9 +1,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-    --bg: #0f1117; --bg2: #1a1c25; --bg3: #242733;
-    --text: #e1e4ed; --text2: #8b8fa3;
-    --accent: #6c8aff; --accent-hover: #8aa4ff;
-    --border: #2e3140; --radius: 10px; --err: #ff6b6b;
+    --bg: #f6f2e9; --bg2: #fffdf8; --bg3: #f1e9da;
+    --text: #26324e; --text2: #8b8577;
+    --accent: #cb4042; --accent-hover: #d96a5f;
+    --border: #ded7c6; --radius: 10px; --err: #c04b47;
 }
 body {
     font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -22,7 +22,7 @@ header h1 { font-size: 20px; font-weight: 600; }
     padding: 40px 20px; text-align: center; cursor: pointer;
     transition: border-color .3s, background .3s; background: var(--bg2);
 }
-.upload-area:hover, .upload-area.dragover { border-color: var(--accent); background: rgba(108,138,255,.05); }
+.upload-area:hover, .upload-area.dragover { border-color: var(--accent); background: rgba(203,64,66,.05); }
 .upload-area .icon { font-size: 36px; opacity: .6; }
 .upload-area .hint { color: var(--text2); font-size: 14px; margin-top: 4px; }
 .upload-area .subhint { color: var(--text2); font-size: 12px; opacity: .6; margin-top: 2px; }
@@ -80,4 +80,12 @@ footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border
     .container { padding: 20px 14px 40px; }
     .preview { flex-direction: column; align-items: center; }
     .preview img { max-width: 100%; }
+}
+
+html[data-theme="night"] {
+    --bg: #151b29; --bg2: #1d2534; --bg3: #26304a;
+    --text: #dfe4f0; --text2: #8a93ad;
+    --accent: #e06062; --accent-hover: #ea7d7f;
+    --border: #2b3448;
+    --err: #ef8a86;
 }

@@ -1,9 +1,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-    --bg: #0f1117; --bg2: #1a1c25; --bg3: #242733;
-    --text: #e1e4ed; --text2: #8b8fa3;
-    --accent: #6c8aff;
-    --border: #2e3140; --radius: 10px;
+    --bg: #f6f2e9; --bg2: #fffdf8; --bg3: #f1e9da;
+    --text: #26324e; --text2: #8b8577;
+    --accent: #cb4042;
+    --border: #ded7c6; --radius: 10px;
 }
 html, body { height: 100%; }
 body {
@@ -88,8 +88,8 @@ header h1 { font-size: 18px; font-weight: 600; }
     padding: 8px 12px; border: 1px solid var(--border); text-align: left;
 }
 .preview th { background: var(--bg3); font-weight: 600; color: var(--text); }
-.preview tr:nth-child(even) { background: rgba(255,255,255,.02); }
-.preview tr:hover { background: rgba(108,138,255,.04); }
+.preview tr:nth-child(even) { background: rgba(38,50,78,.04); }
+.preview tr:hover { background: rgba(203,64,66,.04); }
 .preview blockquote {
     border-left: 3px solid var(--accent); padding: 10px 18px; margin: 12px 0;
     background: var(--bg2); border-radius: 0 var(--radius) var(--radius) 0;
@@ -128,4 +128,12 @@ footer {
     .editor-pane textarea { min-height: 160px; }
     .preview-pane { min-height: 200px; }
     .preview { padding: 14px; }
+}
+
+html[data-theme="night"] {
+    --bg: #151b29; --bg2: #1d2534; --bg3: #26304a;
+    --text: #dfe4f0; --text2: #8a93ad;
+    --accent: #e06062; --accent-hover: #ea7d7f;
+    --border: #2b3448;
+    --err: #ef8a86;
 }

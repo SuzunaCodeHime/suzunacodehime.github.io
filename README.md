@@ -67,7 +67,6 @@ suzunacodehime.github.io/
 │       └── SuzunaCodeHime.png  # 头像 / OG 分享图
 ├── projects/               # 作品文件（本地路径访问）
 │   ├── Class-Attendance-System/  # 课堂点名系统
-│   ├── 520-Greeting-Card/        # 520 贺卡
 │   ├── 2048/                     # 2048 小游戏
 │   ├── Tool_Box/                 # 工具箱
 │   └── cyberpunk-site/           # 赛博朋克演示站

@@ -15,7 +15,7 @@
 
         body {
             font-family: 'Arial', 'Helvetica Neue', sans-serif;
-            background: #faf8ef;
+            background: #f6f2e9;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,7 +39,7 @@
         .title {
             font-size: 64px;
             font-weight: bold;
-            color: #776e65;
+            color: #5f574b;
         }
 
         .scores {
@@ -48,7 +48,7 @@
         }
 
         .score-box {
-            background: #bbada0;
+            background: #d8cdb6;
             border-radius: 6px;
             padding: 8px 20px;
             text-align: center;
@@ -58,7 +58,7 @@
         .score-box .label {
             font-size: 12px;
             font-weight: bold;
-            color: #eee4da;
+            color: #ece3cd;
             text-transform: uppercase;
         }
 
@@ -76,13 +76,13 @@
         }
 
         .subtitle {
-            color: #776e65;
+            color: #5f574b;
             font-size: 16px;
         }
 
         .btn {
-            background: #8f7a66;
-            color: #f9f6f2;
+            background: #7d6f58;
+            color: #fffdf8;
             border: none;
             border-radius: 6px;
             padding: 10px 20px;
@@ -93,12 +93,12 @@
         }
 
         .btn:hover {
-            background: #9f8b77;
+            background: #92846c;
         }
 
         .game-board {
             position: relative;
-            background: #bbada0;
+            background: #d8cdb6;
             border-radius: 8px;
             padding: 12px;
             touch-action: none;
@@ -112,7 +112,7 @@
 
         .cell {
             aspect-ratio: 1;
-            background: rgba(238, 228, 218, 0.35);
+            background: rgba(236, 227, 205, 0.35);
             border-radius: 6px;
         }
 
@@ -177,7 +177,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(238, 228, 218, 0.73);
+            background: rgba(236, 227, 205, 0.78);
             border-radius: 8px;
             z-index: 100;
             flex-direction: column;
@@ -191,7 +191,7 @@
         }
 
         .game-message.win {
-            background: rgba(237, 194, 46, 0.5);
+            background: rgba(176, 123, 50, 0.55);
         }
 
         @keyframes fadeIn {
@@ -207,7 +207,7 @@
         .game-message p {
             font-size: 48px;
             font-weight: bold;
-            color: #776e65;
+            color: #5f574b;
             margin-bottom: 20px;
         }
 
@@ -218,7 +218,7 @@
 
         .tips {
             margin-top: 20px;
-            color: #776e65;
+            color: #5f574b;
             font-size: 14px;
             text-align: center;
             line-height: 1.6;
@@ -315,21 +315,21 @@
 
     <script>
         const TILE_COLORS = {
-            2: { bg: '#eee4da', color: '#776e65', size: 1 },
-            4: { bg: '#ede0c8', color: '#776e65', size: 1 },
-            8: { bg: '#f2b179', color: '#f9f6f2', size: 1 },
-            16: { bg: '#f59563', color: '#f9f6f2', size: 1 },
-            32: { bg: '#f67c5f', color: '#f9f6f2', size: 1 },
-            64: { bg: '#f65e3b', color: '#f9f6f2', size: 1 },
-            128: { bg: '#edcf72', color: '#f9f6f2', size: 0.85 },
-            256: { bg: '#edcc61', color: '#f9f6f2', size: 0.85 },
-            512: { bg: '#edc850', color: '#f9f6f2', size: 0.85 },
-            1024: { bg: '#edc53f', color: '#f9f6f2', size: 0.7 },
-            2048: { bg: '#edc22e', color: '#f9f6f2', size: 0.7 },
+            2: { bg: '#ece3cd', color: '#5f574b', size: 1 },
+            4: { bg: '#e7dbbc', color: '#5f574b', size: 1 },
+            8: { bg: '#e3b184', color: '#fffdf8', size: 1 },
+            16: { bg: '#da9768', color: '#fffdf8', size: 1 },
+            32: { bg: '#cd7d5c', color: '#fffdf8', size: 1 },
+            64: { bg: '#c26a49', color: '#fffdf8', size: 1 },
+            128: { bg: '#d9b264', color: '#fffdf8', size: 0.85 },
+            256: { bg: '#d0a54e', color: '#fffdf8', size: 0.85 },
+            512: { bg: '#c69a3c', color: '#fffdf8', size: 0.85 },
+            1024: { bg: '#bc8f2c', color: '#fffdf8', size: 0.7 },
+            2048: { bg: '#a3813f', color: '#fffdf8', size: 0.7 },
         };
 
         function getTileStyle(value) {
-            return TILE_COLORS[value] || { bg: '#3c3a32', color: '#f9f6f2', size: 0.6 };
+            return TILE_COLORS[value] || { bg: '#45403a', color: '#fffdf8', size: 0.6 };
         }
 
         class Game2048 {

@@ -7,17 +7,17 @@
 <title>夜之城 // 开放世界狂飙</title>
 <style>
   :root {
-    --cyan: #e2718f;
-    --magenta: #ad5f86;
-    --yellow: #b07b32;
-    --bg: #fdf4f7;
+    --cyan: #cb4042;
+    --magenta: #a3813f;
+    --yellow: #a3813f;
+    --bg: #f6f2e9;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--bg);
-    color: #5c4f56;
+    color: #4a4438;
     font-family: "Courier New", "SF Mono", Menlo, monospace;
     overflow-x: hidden;
     min-height: 100vh;
@@ -27,8 +27,8 @@
     position: fixed;
     inset: -100% -50% 0 -50%;
     background-image:
-      linear-gradient(rgba(226, 113, 143, 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(226, 113, 143, 0.12) 1px, transparent 1px);
+      linear-gradient(rgba(203, 64, 66, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(203, 64, 66, 0.12) 1px, transparent 1px);
     background-size: 44px 44px;
     transform: perspective(500px) rotateX(45deg);
     transform-origin: center top;
@@ -59,8 +59,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px clamp(16px, 4vw, 40px);
-    border-bottom: 1px solid rgba(226, 113, 143, 0.25);
-    background: rgba(253, 244, 247, 0.8);
+    border-bottom: 1px solid rgba(203, 64, 66, 0.25);
+    background: rgba(246, 242, 233, 0.8);
   }
 
   .logo {
@@ -137,7 +137,7 @@
     aspect-ratio: 16 / 9;
     background: #fffdfa;
     border: 1px solid var(--cyan);
-    box-shadow: 0 0 30px rgba(226, 113, 143, 0.25), inset 0 0 60px rgba(226, 113, 143, 0.06);
+    box-shadow: 0 0 30px rgba(203, 64, 66, 0.25), inset 0 0 60px rgba(203, 64, 66, 0.06);
     touch-action: none;
   }
 
@@ -154,8 +154,8 @@
     pointer-events: none;
     z-index: 3;
   }
-  .hud b { color: var(--cyan); text-shadow: 0 0 8px rgba(226, 113, 143, 0.6); }
-  .hud .speed { font-size: 1.2rem; color: var(--yellow); text-shadow: 0 0 10px rgba(176, 123, 50, 0.7); }
+  .hud b { color: var(--cyan); text-shadow: 0 0 8px rgba(203, 64, 66, 0.6); }
+  .hud .speed { font-size: 1.2rem; color: var(--yellow); text-shadow: 0 0 10px rgba(163, 129, 63, 0.7); }
   .toggle {
     pointer-events: auto;
     padding: 3px 10px;
@@ -168,7 +168,7 @@
     cursor: pointer;
     transition: 0.3s;
   }
-  .toggle:hover { box-shadow: 0 0 12px rgba(226, 113, 143, 0.5); }
+  .toggle:hover { box-shadow: 0 0 12px rgba(203, 64, 66, 0.5); }
   .toggle.off { color: #a3959c; border-color: #a3959c; }
 
   .boostbar {
@@ -176,7 +176,7 @@
     left: 16px; bottom: 14px;
     width: min(220px, 34%);
     height: 12px;
-    border: 1px solid rgba(176, 123, 50, 0.5);
+    border: 1px solid rgba(163, 129, 63, 0.5);
     background: rgba(255, 251, 252, 0.7);
     z-index: 3;
     pointer-events: none;
@@ -186,7 +186,7 @@
     height: 100%;
     width: 100%;
     background: linear-gradient(90deg, var(--yellow), var(--magenta));
-    box-shadow: 0 0 8px rgba(176, 123, 50, 0.6);
+    box-shadow: 0 0 8px rgba(163, 129, 63, 0.6);
     transition: width 0.15s;
   }
   .boostbar span {
@@ -205,7 +205,7 @@
     justify-content: center;
     align-items: center;
     gap: 16px;
-    background: rgba(253, 244, 247, 0.82);
+    background: rgba(246, 242, 233, 0.82);
     backdrop-filter: blur(3px);
     text-align: center;
     padding: 20px;
@@ -218,7 +218,7 @@
     letter-spacing: 6px;
   }
   .overlay p { color: #877a81; font-size: 0.95rem; line-height: 1.9; letter-spacing: 1px; }
-  .overlay .big { color: var(--yellow); text-shadow: 0 0 10px rgba(176, 123, 50, 0.7); font-size: 1.2rem; }
+  .overlay .big { color: var(--yellow); text-shadow: 0 0 10px rgba(163, 129, 63, 0.7); font-size: 1.2rem; }
 
   .btn {
     padding: 13px 32px;
@@ -235,7 +235,7 @@
   .btn:hover {
     background: var(--magenta);
     color: #fff;
-    box-shadow: 0 0 30px rgba(173, 95, 134, 0.7);
+    box-shadow: 0 0 30px rgba(163, 129, 63, 0.7);
   }
   .btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
 
@@ -527,9 +527,9 @@
     g.fillRect(0, 0, 128, 128);
     return new THREE.CanvasTexture(c);
   }
-  const texCyan = glowTexture("#e2718f");
-  const texMagenta = glowTexture("#ad5f86");
-  const texYellow = glowTexture("#b07b32");
+  const texCyan = glowTexture("#cb4042");
+  const texMagenta = glowTexture("#a3813f");
+  const texYellow = glowTexture("#a3813f");
 
   function makeCar(emissiveHex, tex) {
     const g = new THREE.Group();

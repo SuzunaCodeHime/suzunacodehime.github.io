@@ -1,10 +1,10 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-    --bg: #0f1117; --bg2: #1a1c25; --bg3: #242733;
-    --text: #e1e4ed; --text2: #8b8fa3;
-    --accent: #6c8aff; --accent-hover: #8aa4ff;
-    --border: #2e3140; --radius: 10px;
+    --bg: #f6f2e9; --bg2: #fffdf8; --bg3: #f1e9da;
+    --text: #26324e; --text2: #8b8577;
+    --accent: #cb4042; --accent-hover: #d96a5f;
+    --border: #ded7c6; --radius: 10px;
 }
 
 body {
@@ -67,7 +67,7 @@ textarea[readonly] { cursor: default; opacity: .9; }
 .btn:hover { border-color: var(--text2); color: var(--text); }
 .btn.accent { border-color: var(--accent); color: var(--accent); }
 .btn.accent:hover { background: var(--accent); color: #fff; }
-.btn.copied { border-color: #34d399; color: #34d399; }
+.btn.copied { border-color: #6f9e5a; color: #6f9e5a; }
 
 .theme-toggle {
     position: fixed; top: 16px; right: 16px;
@@ -86,16 +86,10 @@ footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border
     textarea { height: 200px; }
     .toolbar { flex-direction: column; align-items: flex-start; }
 }
-
-/* Light theme */
-[data-theme="light"] {
-    --bg: #f5f5f7; --bg2: #fff; --bg3: #e8e8ed;
-    --text: #1d1d1f; --text2: #6e6e73;
-    --accent: #4a6cf7; --accent-hover: #3a5ce5;
-    --border: #d2d2d7;
+html[data-theme="night"] {
+    --bg: #151b29; --bg2: #1d2534; --bg3: #26304a;
+    --text: #dfe4f0; --text2: #8a93ad;
+    --accent: #e06062; --accent-hover: #ea7d7f;
+    --border: #2b3448;
+    --err: #ef8a86;
 }
-[data-theme="light"] body { background: var(--bg); color: var(--text); }
-[data-theme="light"] textarea { background: var(--bg2); color: var(--text); border-color: var(--border); }
-[data-theme="light"] .btn { background: var(--bg3); color: var(--text2); border-color: var(--border); }
-[data-theme="light"] .swap-btn { background: var(--bg3); color: var(--text); border-color: var(--border); }
-[data-theme="light"] .theme-toggle { background: var(--bg2); color: var(--text2); border-color: var(--border); }

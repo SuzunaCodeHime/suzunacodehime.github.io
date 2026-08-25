@@ -1,9 +1,9 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-    --bg: #0f1117; --bg2: #1a1c25; --bg3: #242733;
-    --text: #e1e4ed; --text2: #8b8fa3;
-    --accent: #6c8aff; --accent-hover: #8aa4ff;
-    --border: #2e3140; --radius: 10px;
+    --bg: #f6f2e9; --bg2: #fffdf8; --bg3: #f1e9da;
+    --text: #26324e; --text2: #8b8577;
+    --accent: #cb4042; --accent-hover: #d96a5f;
+    --border: #ded7c6; --radius: 10px;
 }
 body {
     font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
@@ -41,8 +41,8 @@ textarea { resize: vertical; line-height: 1.5; }
 .model-row select { flex: 1; }
 .model-row button { flex-shrink: 0; padding: 9px 12px; font-size: 16px; line-height: 1; }
 .key-hint { font-size: 11px; color: var(--text2); margin-top: 4px; }
-.key-hint.saved { color: #34d399; }
-.key-hint.error { color: #ef4444; }
+.key-hint.saved { color: #6f9e5a; }
+.key-hint.error { color: #c04b47; }
 .size-custom { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
 .size-custom input { width: 100px; text-align: center; }
 .size-custom span { color: var(--text2); }
@@ -108,7 +108,7 @@ textarea { resize: vertical; line-height: 1.5; }
     line-height: 1;
 }
 .history-item:hover .history-del { display: flex; }
-.history-item .history-del:hover { background: rgba(239,68,68,.8); }
+.history-item .history-del:hover { background: rgba(192,75,71,.8); }
 .empty-hint { color: var(--text2); font-size: 13px; grid-column: 1 / -1; }
 
 .toggle-btn {
@@ -135,7 +135,7 @@ textarea { resize: vertical; line-height: 1.5; }
 #copyCodeBtn { margin-top: 8px; }
 
 #loadingOverlay {
-    position: fixed; inset: 0; background: rgba(15,17,23,.85);
+    position: fixed; inset: 0; background: rgba(246,242,233,.88);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     z-index: 100; gap: 16px;
 }
@@ -162,4 +162,12 @@ footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border
     .field-row { flex-direction: column; gap: 0; }
     .result-grid { grid-template-columns: 1fr; }
     .history-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+}
+
+html[data-theme="night"] {
+    --bg: #151b29; --bg2: #1d2534; --bg3: #26304a;
+    --text: #dfe4f0; --text2: #8a93ad;
+    --accent: #e06062; --accent-hover: #ea7d7f;
+    --border: #2b3448;
+    --err: #ef8a86;
 }

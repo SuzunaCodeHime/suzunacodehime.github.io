@@ -6,11 +6,11 @@
 <title>NEO TOKYO 2077 // 赛博朋克</title>
 <style>
   :root {
-    --neon-pink: #ad5f86;
-    --neon-cyan: #e2718f;
-    --neon-yellow: #b07b32;
-    --neon-purple: #9d8cd8;
-    --bg-dark: #fdf4f7;
+    --neon-pink: #a3813f;
+    --neon-cyan: #cb4042;
+    --neon-yellow: #a3813f;
+    --neon-purple: #7d94b5;
+    --bg-dark: #f6f2e9;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,8 +29,8 @@
     position: fixed;
     inset: 0;
     background-image:
-      linear-gradient(rgba(226, 113, 143, 0.15) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(226, 113, 143, 0.15) 1px, transparent 1px);
+      linear-gradient(rgba(203, 64, 66, 0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(203, 64, 66, 0.15) 1px, transparent 1px);
     background-size: 50px 50px;
     transform: perspective(500px) rotateX(60deg) scale(2.2) translateY(30%);
     transform-origin: top;
@@ -65,7 +65,7 @@
     left: 0;
     width: 100%;
     height: 120px;
-    background: linear-gradient(180deg, transparent, rgba(173, 95, 134, 0.12), transparent);
+    background: linear-gradient(180deg, transparent, rgba(163, 129, 63, 0.12), transparent);
     animation: beam 6s ease-in-out infinite;
     pointer-events: none;
     z-index: 2;
@@ -99,7 +99,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    border-bottom: 1px solid rgba(226, 113, 143, 0.3);
+    border-bottom: 1px solid rgba(203, 64, 66, 0.3);
     backdrop-filter: blur(4px);
   }
 
@@ -163,7 +163,7 @@
     letter-spacing: 0.15em;
     color: #fff;
     position: relative;
-    text-shadow: 0 0 20px rgba(226, 113, 143, 0.8);
+    text-shadow: 0 0 20px rgba(203, 64, 66, 0.8);
   }
   .glitch::before, .glitch::after {
     content: attr(data-text);
@@ -205,7 +205,7 @@
     max-width: 620px;
     line-height: 1.9;
     font-size: 0.95rem;
-    color: rgba(226, 113, 143, 0.7);
+    color: rgba(203, 64, 66, 0.7);
     letter-spacing: 1px;
   }
 
@@ -257,8 +257,8 @@
     width: min(900px, 90%);
   }
   .card {
-    background: rgba(253, 244, 247, 0.8);
-    border: 1px solid rgba(226, 113, 143, 0.35);
+    background: rgba(246, 242, 233, 0.8);
+    border: 1px solid rgba(203, 64, 66, 0.35);
     padding: 28px 20px;
     position: relative;
     transition: 0.3s;
@@ -266,7 +266,7 @@
   }
   .card:hover {
     border-color: var(--neon-pink);
-    box-shadow: 0 0 25px rgba(173, 95, 134, 0.35);
+    box-shadow: 0 0 25px rgba(163, 129, 63, 0.35);
     transform: translateY(-5px);
   }
   .card h3 {
@@ -293,7 +293,7 @@
     z-index: 10;
     text-align: center;
     padding: 30px;
-    border-top: 1px solid rgba(226, 113, 143, 0.2);
+    border-top: 1px solid rgba(203, 64, 66, 0.2);
     font-size: 0.75rem;
     letter-spacing: 3px;
     color: rgba(255, 255, 255, 0.35);
@@ -305,7 +305,7 @@
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: rgba(253, 244, 247, 0.9);
+    background: rgba(246, 242, 233, 0.9);
     align-items: center;
     justify-content: center;
   }
@@ -313,7 +313,7 @@
   .modal-box {
     background: var(--bg-dark);
     border: 1px solid var(--neon-cyan);
-    box-shadow: 0 0 40px rgba(226, 113, 143, 0.4);
+    box-shadow: 0 0 40px rgba(203, 64, 66, 0.4);
     padding: 45px 50px;
     max-width: 460px;
     text-align: left;

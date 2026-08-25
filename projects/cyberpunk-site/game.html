@@ -7,17 +7,17 @@
 <title>夜之城 // 3D 超速走廊</title>
 <style>
   :root {
-    --cyan: #e2718f;
-    --magenta: #ad5f86;
-    --yellow: #b07b32;
-    --bg: #fdf4f7;
+    --cyan: #cb4042;
+    --magenta: #a3813f;
+    --yellow: #a3813f;
+    --bg: #f6f2e9;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--bg);
-    color: #5c4f56;
+    color: #4a4438;
     font-family: "Courier New", "SF Mono", Menlo, monospace;
     overflow-x: hidden;
     min-height: 100vh;
@@ -27,8 +27,8 @@
     position: fixed;
     inset: -100% -50% 0 -50%;
     background-image:
-      linear-gradient(rgba(226, 113, 143, 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(226, 113, 143, 0.12) 1px, transparent 1px);
+      linear-gradient(rgba(203, 64, 66, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(203, 64, 66, 0.12) 1px, transparent 1px);
     background-size: 44px 44px;
     transform: perspective(500px) rotateX(45deg);
     transform-origin: center top;
@@ -59,8 +59,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px clamp(16px, 4vw, 40px);
-    border-bottom: 1px solid rgba(226, 113, 143, 0.25);
-    background: rgba(253, 244, 247, 0.8);
+    border-bottom: 1px solid rgba(203, 64, 66, 0.25);
+    background: rgba(246, 242, 233, 0.8);
   }
 
   .logo {
@@ -133,15 +133,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid rgba(226, 113, 143, 0.4);
+    border: 1px solid rgba(203, 64, 66, 0.4);
     background: rgba(255, 255, 255, 0.6);
     padding: 10px 18px;
     margin-bottom: 12px;
     font-size: 0.95rem;
     letter-spacing: 2px;
   }
-  .hud b { color: var(--cyan); text-shadow: 0 0 8px rgba(226, 113, 143, 0.6); }
-  .hud .lives { color: var(--magenta); text-shadow: 0 0 8px rgba(173, 95, 134, 0.6); letter-spacing: 6px; }
+  .hud b { color: var(--cyan); text-shadow: 0 0 8px rgba(203, 64, 66, 0.6); }
+  .hud .lives { color: var(--magenta); text-shadow: 0 0 8px rgba(163, 129, 63, 0.6); letter-spacing: 6px; }
 
   .wrap { position: relative; width: 100%; max-width: 960px; margin: 0 auto; }
 
@@ -151,7 +151,7 @@
     aspect-ratio: 16 / 9;
     background: #fffdfa;
     border: 1px solid var(--cyan);
-    box-shadow: 0 0 30px rgba(226, 113, 143, 0.25), inset 0 0 60px rgba(226, 113, 143, 0.06);
+    box-shadow: 0 0 30px rgba(203, 64, 66, 0.25), inset 0 0 60px rgba(203, 64, 66, 0.06);
     cursor: crosshair;
     touch-action: none;
   }
@@ -164,7 +164,7 @@
     justify-content: center;
     align-items: center;
     gap: 18px;
-    background: rgba(253, 244, 247, 0.78);
+    background: rgba(246, 242, 233, 0.78);
     backdrop-filter: blur(3px);
     text-align: center;
     padding: 20px;
@@ -177,7 +177,7 @@
     letter-spacing: 6px;
   }
   .overlay p { color: #877a81; font-size: 0.95rem; line-height: 1.8; letter-spacing: 1px; }
-  .overlay .big { color: var(--yellow); text-shadow: 0 0 10px rgba(176, 123, 50, 0.7); font-size: 1.3rem; }
+  .overlay .big { color: var(--yellow); text-shadow: 0 0 10px rgba(163, 129, 63, 0.7); font-size: 1.3rem; }
 
   .btn {
     padding: 13px 32px;
@@ -194,7 +194,7 @@
   .btn:hover {
     background: var(--magenta);
     color: #fff;
-    box-shadow: 0 0 30px rgba(173, 95, 134, 0.7);
+    box-shadow: 0 0 30px rgba(163, 129, 63, 0.7);
   }
   .btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
 
@@ -297,9 +297,9 @@
     const t = new THREE.CanvasTexture(c);
     return t;
   }
-  const texCyan = glowTexture("#e2718f");
-  const texYellow = glowTexture("#b07b32");
-  const texMagenta = glowTexture("#ad5f86");
+  const texCyan = glowTexture("#cb4042");
+  const texYellow = glowTexture("#a3813f");
+  const texMagenta = glowTexture("#a3813f");
 
   const ship = new THREE.Group();
   const body = new THREE.Mesh(

@@ -580,7 +580,7 @@ function showError(msg) {
     card.style.gridColumn = '1 / -1';
     card.style.padding = '20px';
     card.style.textAlign = 'center';
-    card.style.color = '#ef4444';
+    card.style.color = '#c04b47';
     card.textContent = '❌ ' + msg;
     DOM.resultGrid.innerHTML = '';
     DOM.resultGrid.appendChild(card);
