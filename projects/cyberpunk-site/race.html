@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="夜之城 — 开放世界无限地图赛车">
+<title>夜之城 // 开放世界狂飙</title>
+<style>
+  :root {
+    --cyan: #e2718f;
+    --magenta: #ad5f86;
+    --yellow: #b07b32;
+    --bg: #fdf4f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: #5c4f56;
+    font-family: "Courier New", "SF Mono", Menlo, monospace;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: -100% -50% 0 -50%;
+    background-image:
+      linear-gradient(rgba(226, 113, 143, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(226, 113, 143, 0.12) 1px, transparent 1px);
+    background-size: 44px 44px;
+    transform: perspective(500px) rotateX(45deg);
+    transform-origin: center top;
+    z-index: -2;
+    pointer-events: none;
+    will-change: transform;
+    animation: gridmove 8s linear infinite;
+  }
+  @keyframes gridmove {
+    from { transform: perspective(500px) rotateX(45deg) translateY(0); }
+    to   { transform: perspective(500px) rotateX(45deg) translateY(44px); }
+  }
+
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      rgba(190, 130, 150, 0.07) 2px 4px
+    );
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px clamp(16px, 4vw, 40px);
+    border-bottom: 1px solid rgba(226, 113, 143, 0.25);
+    background: rgba(253, 244, 247, 0.8);
+  }
+
+  .logo {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: bold;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan);
+    letter-spacing: 4px;
+  }
+  .logo span { color: var(--magenta); text-shadow: 0 0 10px var(--magenta), 0 0 30px var(--magenta); }
+
+  .back {
+    color: #a3959c;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    transition: 0.3s;
+  }
+  .back:hover { color: var(--yellow); text-shadow: 0 0 8px var(--yellow); }
+
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 40px) clamp(12px, 4vw, 30px) 50px;
+  }
+
+  .glitch {
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 12px var(--cyan), 0 0 50px var(--cyan);
+    position: relative;
+    letter-spacing: 5px;
+    line-height: 1.2;
+    display: inline-block;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .glitch::before {
+    color: var(--magenta);
+    clip-path: inset(20% 0 55% 0);
+    animation: g1 2.5s infinite linear alternate-reverse;
+  }
+  .glitch::after {
+    color: var(--yellow);
+    clip-path: inset(60% 0 15% 0);
+    animation: g2 3s infinite linear alternate-reverse;
+  }
+  @keyframes g1 {
+    0% { transform: translate(0); }
+    20% { transform: translate(-5px, 2px); }
+    40% { transform: translate(4px, -2px); }
+    100% { transform: translate(0); }
+  }
+  @keyframes g2 {
+    0% { transform: translate(0); }
+    25% { transform: translate(4px, -1px); }
+    50% { transform: translate(-6px, 2px); }
+    100% { transform: translate(0); }
+  }
+
+  .hint { margin: 14px 0 18px; color: var(--yellow); font-size: 0.9rem; letter-spacing: 2px; }
+  .hint::before { content: "> "; color: var(--magenta); }
+
+  .wrap { position: relative; width: 100%; max-width: 960px; margin: 0 auto; }
+
+  canvas {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #fffdfa;
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 30px rgba(226, 113, 143, 0.25), inset 0 0 60px rgba(226, 113, 143, 0.06);
+    touch-action: none;
+  }
+
+  .hud {
+    position: absolute;
+    left: 0; right: 0; top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    background: linear-gradient(to bottom, rgba(255, 251, 252, 0.75), transparent);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .hud b { color: var(--cyan); text-shadow: 0 0 8px rgba(226, 113, 143, 0.6); }
+  .hud .speed { font-size: 1.2rem; color: var(--yellow); text-shadow: 0 0 10px rgba(176, 123, 50, 0.7); }
+  .toggle {
+    pointer-events: auto;
+    padding: 3px 10px;
+    border: 1px solid var(--cyan);
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--cyan);
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .toggle:hover { box-shadow: 0 0 12px rgba(226, 113, 143, 0.5); }
+  .toggle.off { color: #a3959c; border-color: #a3959c; }
+
+  .boostbar {
+    position: absolute;
+    left: 16px; bottom: 14px;
+    width: min(220px, 34%);
+    height: 12px;
+    border: 1px solid rgba(176, 123, 50, 0.5);
+    background: rgba(255, 251, 252, 0.7);
+    z-index: 3;
+    pointer-events: none;
+  }
+  .boostbar i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--yellow), var(--magenta));
+    box-shadow: 0 0 8px rgba(176, 123, 50, 0.6);
+    transition: width 0.15s;
+  }
+  .boostbar span {
+    position: absolute;
+    right: 6px; top: -2px;
+    font-size: 0.6rem;
+    color: var(--yellow);
+    letter-spacing: 1px;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    background: rgba(253, 244, 247, 0.82);
+    backdrop-filter: blur(3px);
+    text-align: center;
+    padding: 20px;
+    z-index: 10;
+  }
+  .overlay h2 {
+    color: var(--cyan);
+    text-shadow: 0 0 14px var(--cyan);
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    letter-spacing: 6px;
+  }
+  .overlay p { color: #877a81; font-size: 0.95rem; line-height: 1.9; letter-spacing: 1px; }
+  .overlay .big { color: var(--yellow); text-shadow: 0 0 10px rgba(176, 123, 50, 0.7); font-size: 1.2rem; }
+
+  .btn {
+    padding: 13px 32px;
+    border: 1px solid var(--magenta);
+    color: var(--magenta);
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-shadow: 0 0 8px var(--magenta);
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .btn:hover {
+    background: var(--magenta);
+    color: #fff;
+    box-shadow: 0 0 30px rgba(173, 95, 134, 0.7);
+  }
+  .btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+
+  .hidden { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid-bg, .glitch::before, .glitch::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+
+<header>
+  <div class="logo">NEON<span>//</span>CITY</div>
+  <a class="back" href="index.html">← 返回主页</a>
+</header>
+
+<main>
+  <h1 class="glitch" data-text="开放世界狂飙">开放世界狂飙</h1>
+  <p class="hint">W/↑ 加速 · S/↓ 刹车 · A D/← → 转向 · Shift 氮气 · 三条大街 · 无限世界无障碍物 · HUD 右上角可开关车流</p>
+
+  <div class="wrap">
+    <canvas id="game"></canvas>
+
+    <div class="hud hidden" id="hud">
+      <span class="speed" id="h-speed">0 <small>km/h</small></span>
+      <span>得分 <b id="h-score">0</b></span>
+      <span>核心 <b id="h-cores">0</b></span>
+      <span>里程 <b id="h-dist">0</b> km</span>
+      <span id="h-coords" style="color:#a3959c">x 0 · z 0</span>
+      <button class="toggle" id="btn-traffic">车流 ON</button>
+    </div>
+
+    <div class="boostbar hidden" id="boostbar"><i id="boost-fill"></i><span>BOOST</span></div>
+
+    <div class="overlay" id="over-menu">
+      <h2>夜之城开放世界</h2>
+      <p>程序生成、永无止境的霓虹大陆，三条大街贯穿其中。<br>
+        沿大街飞驰收集数据核心，在荒野中翻山越岭，全程无障碍物。<br>
+        <span class="big">W 加速 · S 刹车 · A D 转向 · Shift 氮气</span><br>
+        车流可在游戏内随时开关，超越车流 +150 分。</p>
+      <button class="btn" id="btn-start">启动引擎</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const wrap = document.querySelector(".wrap");
+  const canvas = document.getElementById("game");
+  const hud = document.getElementById("hud");
+  const boostBar = document.getElementById("boostbar");
+  const boostFill = document.getElementById("boost-fill");
+  const hSpeed = document.getElementById("h-speed");
+  const hScore = document.getElementById("h-score");
+  const hCores = document.getElementById("h-cores");
+  const hDist = document.getElementById("h-dist");
+  const hCoords = document.getElementById("h-coords");
+  const btnTraffic = document.getElementById("btn-traffic");
+  const overMenu = document.getElementById("over-menu");
+  const btnStart = document.getElementById("btn-start");
+
+  if (typeof THREE === "undefined") {
+    overMenu.querySelector("p").textContent = "3D 引擎加载失败，请检查网络连接后刷新。";
+    btnStart.classList.add("hidden");
+    return;
+  }
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  } catch (e) {
+    overMenu.querySelector("p").textContent = "无法创建 3D 画面（浏览器未开启 WebGL）。请检查浏览器设置后刷新。";
+    btnStart.classList.add("hidden");
+    return;
+  }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x05060f);
+  scene.fog = new THREE.Fog(0x05060f, 30, 150);
+
+  const camera = new THREE.PerspectiveCamera(70, 16 / 9, 0.1, 400);
+
+  scene.add(new THREE.AmbientLight(0x445566, 1.1));
+  scene.add(new THREE.DirectionalLight(0x88ccff, 1.0));
+  const carLight = new THREE.PointLight(0x00f0ff, 1.2, 30);
+  scene.add(carLight);
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  /* ---------- 程序化世界（Minecraft 式分块生成） ---------- */
+  const CHUNK = 16;
+  const RENDER_R = 4;
+  const MAXH = 3;
+  const ROAD_HALF = 5;
+  const CHUNK_CAP = 320;
+
+  function hash2(x, z) {
+    let n = (x * 374761393 + z * 668265263) | 0;
+    n = (n ^ (n >>> 13)) | 0;
+    n = Math.imul(n, 1274126177);
+    return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+  }
+  function smooth(t) { return t * t * (3 - 2 * t); }
+  function vnoise(x, z) {
+    const x0 = Math.floor(x), z0 = Math.floor(z);
+    const fx = x - x0, fz = z - z0;
+    const sx = smooth(fx), sz = smooth(fz);
+    const a = hash2(x0, z0), b = hash2(x0 + 1, z0);
+    const c = hash2(x0, z0 + 1), d = hash2(x0 + 1, z0 + 1);
+    const ab = a + (b - a) * sx;
+    const cd = c + (d - c) * sx;
+    return ab + (cd - ab) * sz;
+  }
+  function nz(x, z) {
+    return vnoise(x, z) * 0.72 + vnoise(x * 2.3 + 7, z * 2.3 - 3) * 0.28;
+  }
+
+  const ROADS = [
+    { z: (x) => Math.sin(x * 0.02) * 14 },
+    { z: () => 40 },
+    { z: () => -40 },
+  ];
+
+  function roadZ(x) {
+    return ROADS[0].z(x);
+  }
+
+  function onAnyRoad(x, z) {
+    for (const r of ROADS) {
+      if (Math.abs(z - r.z(x)) <= ROAD_HALF) return true;
+    }
+    return false;
+  }
+
+  function terrainH(x, z) {
+    if (onAnyRoad(x, z)) return 0;
+    const bx = Math.floor(x), bz = Math.floor(z);
+    return 1 + Math.min(MAXH, Math.floor(nz(bx * 0.12, bz * 0.12) * (MAXH + 1)));
+  }
+
+  const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+  const terMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  const roadMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  const railMat = new THREE.MeshLambertMaterial({ color: 0x00f0ff, emissive: 0x00f0ff, emissiveIntensity: 0.7 });
+
+  const BASE = new THREE.Mesh(
+    new THREE.PlaneGeometry(800, 800),
+    new THREE.MeshLambertMaterial({ color: 0x02040c })
+  );
+  BASE.rotation.x = -Math.PI / 2;
+  BASE.position.y = -0.5;
+  scene.add(BASE);
+
+  const chunks = new Map();
+  const CAP_TER = CHUNK * CHUNK * (MAXH + 2);
+  const CAP_ROAD = CHUNK * CHUNK;
+
+  function terrColor(h, wx, wz) {
+    const r = hash2(wx * 13 + 7, wz * 17 + 3);
+    const c = new THREE.Color();
+    if (h === 1) c.setHex(0x0e2a4a);
+    else if (h === 2) c.setHex(0x123a5e);
+    else if (h === 3) c.setHex(0x0f4f6b);
+    else c.setHex(0x0a6480);
+    c.offsetHSL(0, 0, (r - 0.5) * 0.1);
+    return c;
+  }
+
+  const _mat = new THREE.Matrix4();
+  const _pos = new THREE.Vector3();
+  const _quat = new THREE.Quaternion();
+  const _scl = new THREE.Vector3(1, 1, 1);
+  const _col = new THREE.Color();
+
+  function newChunk(cx, cz) {
+    const ter = new THREE.InstancedMesh(boxGeo, terMat, CAP_TER);
+    const road = new THREE.InstancedMesh(boxGeo, roadMat, CAP_ROAD);
+    const rail = new THREE.InstancedMesh(boxGeo, railMat, CAP_ROAD);
+    ter.frustumCulled = rail.frustumCulled = road.frustumCulled = false;
+    scene.add(ter, road, rail);
+    const ch = { cx, cz, ter, road, rail, active: false };
+    chunks.set(cx + "," + cz, ch);
+    return ch;
+  }
+
+  function buildChunk(ch) {
+    const { ter, road, rail } = ch;
+    const baseX = ch.cx * CHUNK, baseZ = ch.cz * CHUNK;
+    let nt = 0, nr = 0, nrl = 0;
+    for (let ix = 0; ix < CHUNK; ix++) {
+      for (let iz = 0; iz < CHUNK; iz++) {
+        const wx = baseX + ix, wz = baseZ + iz;
+        const cx = wx + 0.5, cz = wz + 0.5;
+
+        let onRoad = false;
+        for (const r of ROADS) {
+          const zc = r.z(cx);
+          const d = Math.abs(cz - zc);
+          if (d <= ROAD_HALF) {
+            onRoad = true;
+            _col.setHex(Math.abs(cz - zc) < 0.75 && (wx % 8) < 4 ? 0xffe600 : 0x060a12);
+            road.setColorAt(nr, _col);
+            _pos.set(cx, 0.5, cz);
+            road.setMatrixAt(nr++, _mat.compose(_pos, _quat, _scl));
+            if (d > ROAD_HALF - 0.9) {
+              _pos.set(cx, 0.5, cz);
+              rail.setMatrixAt(nrl++, _mat.compose(_pos, _quat, _scl));
+            }
+          }
+        }
+
+        if (!onRoad) {
+          const h = terrainH(cx, cz);
+          for (let y = 0; y < h; y++) {
+            _col.copy(terrColor(h, wx, wz));
+            ter.setColorAt(nt, _col);
+            _pos.set(cx, y + 0.5, cz);
+            ter.setMatrixAt(nt++, _mat.compose(_pos, _quat, _scl));
+          }
+        }
+      }
+    }
+    ter.count = nt;
+    road.count = nr;
+    rail.count = nrl;
+    ter.instanceMatrix.needsUpdate = true;
+    road.instanceMatrix.needsUpdate = true;
+    rail.instanceMatrix.needsUpdate = true;
+    if (ter.instanceColor) ter.instanceColor.needsUpdate = true;
+    if (road.instanceColor) road.instanceColor.needsUpdate = true;
+    ch.active = true;
+  }
+
+  function deactivateChunk(ch) {
+    ch.active = false;
+    ch.ter.visible = false;
+    ch.road.visible = false;
+    ch.rail.visible = false;
+  }
+
+  function ensureChunks() {
+    const pxc = Math.floor(player.group.position.x / CHUNK);
+    const pzc = Math.floor(player.group.position.z / CHUNK);
+    const activeKeys = new Set();
+    for (let dx = -RENDER_R; dx <= RENDER_R; dx++) {
+      for (let dz = -RENDER_R; dz <= RENDER_R; dz++) {
+        const cx = pxc + dx, cz = pzc + dz;
+        const key = cx + "," + cz;
+        activeKeys.add(key);
+        let ch = chunks.get(key);
+        if (!ch) {
+          ch = newChunk(cx, cz);
+          buildChunk(ch);
+        } else if (!ch.active) {
+          buildChunk(ch);
+        }
+      }
+    }
+    if (chunks.size > CHUNK_CAP) {
+      for (const [key, ch] of chunks) {
+        if (!activeKeys.has(key)) {
+          scene.remove(ch.ter, ch.road, ch.rail);
+          chunks.delete(key);
+        }
+      }
+    }
+    BASE.position.x = Math.round(pxc / 25) * 800;
+    BASE.position.z = Math.round(pzc / 25) * 800;
+  }
+
+  /* ---------- 载具 ---------- */
+  function glowTexture(color) {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const g = c.getContext("2d");
+    const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grad.addColorStop(0, color);
+    grad.addColorStop(0.4, color + "66");
+    grad.addColorStop(1, "transparent");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 128, 128);
+    return new THREE.CanvasTexture(c);
+  }
+  const texCyan = glowTexture("#e2718f");
+  const texMagenta = glowTexture("#ad5f86");
+  const texYellow = glowTexture("#b07b32");
+
+  function makeCar(emissiveHex, tex) {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(
+      new THREE.BoxGeometry(1.9, 0.5, 3.8),
+      new THREE.MeshLambertMaterial({ color: 0x06222b, emissive: emissiveHex, emissiveIntensity: 0.85 })
+    );
+    body.position.y = 0.45;
+    const cabin = new THREE.Mesh(
+      new THREE.BoxGeometry(1.5, 0.42, 1.9),
+      new THREE.MeshLambertMaterial({ color: 0x041018, emissive: emissiveHex, emissiveIntensity: 0.4 })
+    );
+    cabin.position.y = 0.9;
+    cabin.position.z = -0.3;
+    const wheelMat = new THREE.MeshLambertMaterial({ color: 0x111122 });
+    const wheelGeo = new THREE.BoxGeometry(0.5, 0.65, 0.3);
+    const wheels = [];
+    for (const [wx, wz] of [[-1.05, -1.3], [1.05, -1.3], [-1.05, 1.3], [1.05, 1.3]]) {
+      const w = new THREE.Mesh(wheelGeo, wheelMat);
+      w.position.set(wx, 0.33, wz);
+      g.add(w);
+      wheels.push(w);
+    }
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: tex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.7,
+    }));
+    glow.scale.set(5, 5, 1);
+    glow.position.y = 0.08;
+    g.add(glow, body, cabin);
+    scene.add(g);
+    return { group: g, wheels };
+  }
+
+  const player = makeCar(0x00f0ff, texCyan);
+  const AI_COUNT = 3;
+  const aiCars = [];
+  for (let i = 0; i < AI_COUNT; i++) {
+    const car = makeCar(0xff2d78, texMagenta);
+    aiCars.push({ ...car, x: 60 + i * 55, speed: 12 + i * 2, passed: false, hitT: 0 });
+  }
+
+  /* ---------- 数据核心 ---------- */
+  const cores = [];
+  const CORE_MAX = 30;
+  for (let i = 0; i < CORE_MAX; i++) {
+    const m = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(0.42, 0),
+      new THREE.MeshLambertMaterial({ color: 0x221d00, emissive: 0xffe600, emissiveIntensity: 1.6 })
+    );
+    m.visible = false;
+    scene.add(m);
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: texYellow, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.9,
+    }));
+    s.scale.set(2.4, 2.4, 1);
+    s.visible = false;
+    scene.add(s);
+    cores.push({ mesh: m, sprite: s, key: null, x: 0, z: 0, y: 0, t: 0 });
+  }
+  let cIdx = 0;
+  const collected = new Set();
+
+  function syncCores() {
+    const px = player.group.position.x, pz = player.group.position.z;
+    const R = (RENDER_R + 1) * CHUNK;
+    const items = [];
+    const k0 = Math.floor((px - R) / 24), k1 = Math.floor((px + R) / 24);
+    for (let k = k0; k <= k1; k++) {
+      const key = "r" + k;
+      if (collected.has(key)) continue;
+      const x = k * 24;
+      items.push({ key, x, y: 0.8, z: roadZ(x), v: 10 });
+    }
+    const bc0 = Math.floor((pz - R) / CHUNK), bc1 = Math.floor((pz + R) / CHUNK);
+    const bx0 = Math.floor((px - R) / CHUNK), bx1 = Math.floor((px + R) / CHUNK);
+    for (let bx = bx0; bx <= bx1; bx++) {
+      for (let bz = bc0; bz <= bc1; bz++) {
+        for (let ix = 0; ix < CHUNK; ix++) {
+          for (let iz = 0; iz < CHUNK; iz++) {
+            const wx = bx * CHUNK + ix, wz = bz * CHUNK + iz;
+            if (onAnyRoad(wx + 0.5, wz + 0.5)) continue;
+            if (hash2(wx + 3, wz + 9) > 0.992) {
+              const key = "h" + wx + "," + wz;
+              if (collected.has(key)) continue;
+              items.push({ key, x: wx + 0.5, y: terrainH(wx + 0.5, wz + 0.5) + 1.6, z: wz + 0.5, v: 25 });
+            }
+          }
+        }
+      }
+    }
+    for (const c of cores) c.mesh.visible = false;
+    const n = Math.min(cores.length, items.length);
+    for (let i = 0; i < n; i++) {
+      const c = cores[i];
+      const it = items[i];
+      c.key = it.key;
+      c.x = it.x; c.y = it.y; c.z = it.z;
+      c.v = it.v;
+      c.mesh.visible = true;
+      c.sprite.visible = true;
+      c.mesh.position.set(it.x, it.y, it.z);
+      c.sprite.position.copy(c.mesh.position);
+    }
+  }
+
+  /* ---------- 状态 ---------- */
+  const state = {
+    mode: "menu",
+    score: 0,
+    coresGot: 0,
+    speed: 0,
+    yaw: 0,
+    dist: 0,
+    boost: 1,
+    boostOn: false,
+    shake: 0,
+    time: 0,
+  };
+  const keys = {};
+  const MAX_SPEED = 42, BOOST_SPEED = 66;
+  let traffic = true;
+
+  function reset() {
+    state.mode = "playing";
+    state.score = 0;
+    state.coresGot = 0;
+    state.speed = 0;
+    state.yaw = 0;
+    state.dist = 0;
+    state.boost = 1;
+    state.shake = 0;
+    collected.clear();
+    const g = player.group;
+    const sx = 0, sz = roadZ(sx) + 1.5;
+    g.position.set(sx, 0.6, sz);
+    const slope = 0.28 * Math.cos(sx * 0.02);
+    state.yaw = Math.atan2(1, slope);
+    g.rotation.set(0, state.yaw, 0);
+  }
+
+  function updateHud() {
+    hSpeed.innerHTML = Math.round(state.speed * 9) + " <small>km/h</small>";
+    hScore.textContent = state.score;
+    hCores.textContent = state.coresGot;
+    hDist.textContent = (state.dist / 1000).toFixed(1);
+    const p = player.group.position;
+    hCoords.textContent = "x " + Math.round(p.x) + " · z " + Math.round(p.z);
+    boostFill.style.width = Math.round(state.boost * 100) + "%";
+  }
+
+  function beep(freq, dur, type, vol) {
+    if (!audioCtx) return;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start();
+    o.stop(audioCtx.currentTime + dur);
+  }
+  let audioCtx = null;
+  let engineOsc = null;
+  let engineGain = null;
+  function audio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    engineOsc = audioCtx.createOscillator();
+    engineGain = audioCtx.createGain();
+    const lp = audioCtx.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 600;
+    engineOsc.type = "sawtooth";
+    engineOsc.frequency.value = 40;
+    engineGain.gain.value = 0;
+    engineOsc.connect(lp).connect(engineGain).connect(audioCtx.destination);
+    engineOsc.start();
+  }
+
+  function update(dt) {
+    state.time += dt;
+    state.shake = Math.max(0, state.shake - dt);
+    if (state.mode !== "playing") return;
+
+    const accel = keys.KeyW || keys.ArrowUp;
+    const brake = keys.KeyS || keys.ArrowDown;
+    const left = keys.KeyA || keys.ArrowLeft;
+    const right = keys.KeyD || keys.ArrowRight;
+    const boostKey = keys.ShiftLeft || keys.ShiftRight;
+
+    const steer = (left ? 1 : 0) - (right ? 1 : 0);
+    state.yaw += steer * dt * (2.4 - Math.min(1.6, state.speed * 0.045));
+
+    if (boostKey && state.boost > 0) {
+      state.boostOn = true;
+      state.boost = Math.max(0, state.boost - dt / 3);
+    } else {
+      state.boostOn = false;
+      state.boost = Math.min(1, state.boost + dt / 2.5);
+    }
+
+    const maxS = state.boostOn ? BOOST_SPEED : MAX_SPEED;
+    const target = accel ? maxS : brake ? -12 : 0;
+    const rate = accel ? 1 - Math.exp(-2.2 * dt) : brake ? 1 - Math.exp(-3.2 * dt) : 1 - Math.exp(-1.6 * dt);
+    state.speed += (target - state.speed) * rate;
+
+    const g = player.group;
+    const oldY = g.position.y;
+    g.position.x += Math.sin(state.yaw) * state.speed * dt;
+    g.position.z += Math.cos(state.yaw) * state.speed * dt;
+    const groundY = terrainH(g.position.x, g.position.z);
+    g.position.y += (groundY + 0.5 - g.position.y) * (1 - Math.exp(-10 * dt));
+    const dH = Math.abs(groundY + 0.5 - oldY);
+    if (dH > 1.1) {
+      state.shake = Math.max(state.shake, 0.2);
+      state.speed *= 0.82;
+    }
+    g.rotation.y = state.yaw;
+    g.rotation.z = -steer * 0.06 * Math.min(1, state.speed / 25);
+    for (const w of player.wheels) w.rotation.x += state.speed * dt * 2.4;
+    carLight.position.set(g.position.x, 2.2, g.position.z);
+
+    state.dist += Math.abs(state.speed) * dt;
+
+    /* AI 车流 */
+    if (traffic) {
+      for (const c of aiCars) {
+        c.hitT = Math.max(0, c.hitT - dt);
+        if (c.x < g.position.x - 70) c.x = g.position.x + 220;
+        c.x += c.speed * dt;
+        const zc = roadZ(c.x);
+        c.group.position.x = c.x;
+        c.group.position.y = 0.5;
+        c.group.position.z = zc;
+        c.group.rotation.y = 0;
+        for (const w of c.wheels) w.rotation.x += c.speed * dt * 2.4;
+
+        const dx = c.group.position.x - g.position.x;
+        const dz = c.group.position.z - g.position.z;
+        const dist = Math.hypot(dx, dz);
+        if (!c.passed && dist < 9) {
+          const dot = dx * Math.sin(state.yaw) + dz * Math.cos(state.yaw);
+          if (dot < -0.5) {
+            c.passed = true;
+            state.score += 150;
+            beep(520, 0.1, "square", 0.1);
+          }
+        }
+        if (c.hitT <= 0 && dist < 2.3) {
+          c.hitT = 0.7;
+          state.speed *= 0.3;
+          state.shake = 0.25;
+          beep(140, 0.15, "sawtooth", 0.13);
+          g.position.x -= (dx / (dist || 1)) * 1.6;
+          g.position.z -= (dz / (dist || 1)) * 1.6;
+        }
+      }
+    }
+
+    /* 数据核心 */
+    for (const c of cores) {
+      if (!c.mesh.visible) continue;
+      c.t += dt;
+      c.mesh.rotation.y += dt * 2.4;
+      c.mesh.position.y = c.y + Math.sin(c.t * 2) * 0.25;
+      c.sprite.position.copy(c.mesh.position);
+      const dx = c.x - g.position.x;
+      const dz = c.z - g.position.z;
+      if (dx * dx + dz * dz < 2.2 * 2.2) {
+        c.mesh.visible = false;
+        c.sprite.visible = false;
+        collected.add(c.key);
+        state.score += c.v;
+        state.coresGot++;
+        beep(880, 0.09, "square", 0.1);
+      }
+    }
+
+    syncCores();
+    ensureChunks();
+    updateHud();
+
+    /* 引擎音效 */
+    if (engineGain) {
+      const f = 38 + Math.abs(state.speed) * 3.4 + (state.boostOn ? 14 : 0);
+      engineOsc.frequency.value += (f - engineOsc.frequency.value) * (1 - Math.exp(-6 * dt));
+      engineGain.gain.value += (0.045 + Math.min(0.05, Math.abs(state.speed) * 0.0015) - engineGain.gain.value) * (1 - Math.exp(-6 * dt));
+    }
+
+    /* 摄像机 */
+    const camPos = new THREE.Vector3(
+      g.position.x - Math.sin(state.yaw) * 10,
+      5.5 + g.position.y * 0.4 + (state.shake > 0 ? (Math.random() - 0.5) * 0.5 : 0),
+      g.position.z - Math.cos(state.yaw) * 10
+    );
+    camera.position.lerp(camPos, 1 - Math.exp(-5 * dt));
+    camera.lookAt(
+      g.position.x + Math.sin(state.yaw) * 6,
+      1.2 + g.position.y * 0.4,
+      g.position.z + Math.cos(state.yaw) * 6
+    );
+  }
+
+  function fit() {
+    const w = wrap.clientWidth;
+    renderer.setSize(w, w * 9 / 16, false);
+    canvas.style.width = w + "px";
+    canvas.style.height = w * 9 / 16 + "px";
+    camera.aspect = 16 / 9;
+    camera.updateProjectionMatrix();
+  }
+
+  function startGame() {
+    audio();
+    overMenu.classList.add("hidden");
+    hud.classList.remove("hidden");
+    boostBar.classList.remove("hidden");
+    reset();
+  }
+
+  addEventListener("keydown", (e) => {
+    keys[e.code] = true;
+    if (e.code === "Space") e.preventDefault();
+  });
+  addEventListener("keyup", (e) => { keys[e.code] = false; });
+  btnStart.addEventListener("click", startGame);
+  btnTraffic.addEventListener("click", () => {
+    traffic = !traffic;
+    btnTraffic.textContent = traffic ? "车流 ON" : "车流 OFF";
+    btnTraffic.classList.toggle("off", !traffic);
+    aiCars.forEach((c) => (c.group.visible = traffic));
+  });
+  addEventListener("resize", fit);
+
+  fit();
+  reset();
+  ensureChunks();
+  syncCores();
+
+  requestAnimationFrame(function frame(now) {
+    const dt = Math.min(0.05, (now - (frame.last || now)) / 1000);
+    frame.last = now;
+    update(dt);
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  });
+})();
+</script>
+
+</body>
+</html>

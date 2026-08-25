@@ -3,182 +3,200 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>SuzunaCodeHime の 作品集</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuzunaCodeHime｜作品集・和</title>
+    <meta name="description" content="SuzunaCodeHime の 和风作品集 —— 前端学习者的手作小物：课堂点名系统、520 贺卡、2048、工具箱。">
+    <meta property="og:title" content="SuzunaCodeHime｜作品集・和">
+    <meta property="og:description" content="以代码为针，缝一段温柔的时光。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://suzunacodehime.github.io/">
+    <meta property="og:image" content="https://suzunacodehime.github.io/assets/img/SuzunaCodeHime.png">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23cb4042'/%3E%3Ctext x='32' y='44' font-size='34' font-family='serif' fill='%23fdf8ef' text-anchor='middle'%3E%E9%88%B4%3C/text%3E%3C/svg%3E">
+    <script src="assets/js/theme.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 
 <body>
-    <!-- 导航栏 -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-content">
-            <div class="nav-logo">✦ Suzuna</div>
-            <ul class="nav-links">
-                <li><a href="#about">关于</a></li>
-                <li><a href="#skills">技能</a></li>
-                <li><a href="#projects">作品</a></li>
-                <li><a href="#thoughts">随笔</a></li>
-                <li><a href="#contact">联系</a></li>
-            </ul>
-            <button class="theme-toggle" id="themeToggle" title="切换主题">☾</button>
-        </div>
-    </nav>
-
-    <!-- 背景光斑 -->
-    <div class="aurora" aria-hidden="true">
-        <div class="aurora-blob a1"></div>
-        <div class="aurora-blob a2"></div>
-        <div class="aurora-blob a3"></div>
-        <div class="aurora-blob a4"></div>
+    <div class="sakura" aria-hidden="true">
+        <span class="petal" style="left:4%;width:13px;height:13px;animation-duration:13s;animation-delay:0s"></span>
+        <span class="petal" style="left:12%;width:9px;height:9px;animation-duration:17s;animation-delay:4s"></span>
+        <span class="petal" style="left:21%;width:15px;height:15px;animation-duration:14s;animation-delay:8s"></span>
+        <span class="petal" style="left:33%;width:8px;height:8px;animation-duration:19s;animation-delay:2s"></span>
+        <span class="petal" style="left:44%;width:12px;height:12px;animation-duration:15s;animation-delay:10s"></span>
+        <span class="petal" style="left:55%;width:10px;height:10px;animation-duration:18s;animation-delay:6s"></span>
+        <span class="petal" style="left:63%;width:14px;height:14px;animation-duration:13s;animation-delay:12s"></span>
+        <span class="petal" style="left:72%;width:9px;height:9px;animation-duration:20s;animation-delay:1s"></span>
+        <span class="petal" style="left:80%;width:13px;height:13px;animation-duration:16s;animation-delay:7s"></span>
+        <span class="petal" style="left:88%;width:10px;height:10px;animation-duration:14s;animation-delay:3s"></span>
+        <span class="petal" style="left:94%;width:12px;height:12px;animation-duration:17s;animation-delay:9s"></span>
+        <span class="petal" style="left:27%;width:11px;height:11px;animation-duration:21s;animation-delay:14s"></span>
     </div>
 
-    <!-- 背景粒子 -->
-    <div class="particles" id="particles"></div>
+    <aside class="side-caption" aria-hidden="true">すずな の 作品集</aside>
 
-    <div class="container">
-        <!-- 头部区域 -->
-        <div class="header">
-            <div class="avatar-wrapper">
-                <img src="./img/SuzunaCodeHime.png" class="avatar" alt="头像">
+    <button class="torii" id="torii" aria-label="返回顶部">
+        <i class="t1"></i><i class="t2"></i><i class="t3"></i><i class="t4"></i>
+    </button>
+
+    <div class="wrap">
+        <div class="sun" aria-hidden="true"></div>
+
+        <header class="top rise r1">
+            <div class="seal" aria-hidden="true">鈴</div>
+            <div class="site-name">
+                SuzunaCodeHime
+                <span class="site-sub">以代码编织温柔</span>
             </div>
-            <div class="name">SuzunaCodeHime</div>
-            <div class="sign">前端学习者 · 用代码编织温柔的作品集</div>
-            <div class="time-box" id="nowTime"></div>
-            <div id="welcomeText"></div>
-        </div>
+            <nav class="top-nav">
+                <a href="#works">作品</a>
+                <a href="#skills">段位</a>
+                <a href="#notes">随筆</a>
+                <a href="#contact">联系</a>
+                <button class="theme-btn" id="themeToggle" title="切换昼夜">☾</button>
+            </nav>
+        </header>
 
-        <!-- 关于我 -->
-        <div class="box" id="about">
-                    <div class="title"><span class="title-icon">🌸</span>关于我</div>
-                    <p>07年在校大学生，自学前端开发，性格细腻温柔，心思敏感内敛。</p>
-                    <p>偏爱安静独处，喜欢慢节奏的生活，待人真诚心软。</p>
-                    <p>正在努力变好，认真学习，用一个个小作品记录自己的成长。</p>
+        <main>
+            <section class="hero rise r2">
+                <p class="kicker">作品集 ・ 二〇二六</p>
+                <h1 class="hero-title">
+                    以代码为针，<br>
+                    缝一段<span class="brush">温柔的时光</span>
+                </h1>
+                <p class="hero-line">前端学习者 SuzunaCodeHime 的作品小集，皆是认真打磨的小物。</p>
+            </section>
+
+            <section id="works" class="section rise r3">
+                <h2 class="sec-title"><span class="jp">作品</span><span class="en">WORKS</span></h2>
+                <ol class="work-list">
+                    <li>
+                        <a href="projects/Class-Attendance-System/index.html">
+                            <span class="num">壱</span>
+                            <span class="w-body">
+                                <span class="w-name">课堂点名系统<span class="tags"><span class="tag">HTML</span><span class="tag">JS</span></span></span>
+                                <em class="w-en">CLASS-ATTENDANCE-SYSTEM</em>
+                                <span class="w-desc">基于前端技术实现的随机点名工具，简洁高效。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="projects/520-Greeting-Card/index.html">
+                            <span class="num">弐</span>
+                            <span class="w-body">
+                                <span class="w-name">520 贺卡<span class="tags"><span class="tag">CSS</span><span class="tag">动画</span></span></span>
+                                <em class="w-en">520-GREETING-CARD</em>
+                                <span class="w-desc">浪漫交互式电子贺卡，传递温柔心意。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="projects/2048/index.html">
+                            <span class="num">参</span>
+                            <span class="w-body">
+                                <span class="w-name">2048 小游戏<span class="tags"><span class="tag">JS</span><span class="tag">H5</span></span></span>
+                                <em class="w-en">2048</em>
+                                <span class="w-desc">基于 H5 实现的 2048 小游戏。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="projects/Tool_Box/index.html">
+                            <span class="num">肆</span>
+                            <span class="w-body">
+                                <span class="w-name">工具箱<span class="tags"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JS</span></span></span>
+                                <em class="w-en">TOOL_BOX</em>
+                                <span class="w-desc">在线工具箱集合，聚合多种实用小工具。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="projects/cyberpunk-site/index.html">
+                            <span class="num">伍</span>
+                            <span class="w-body">
+                                <span class="w-name">赛博朋克演示站<span class="tags"><span class="tag">CSS</span><span class="tag">动画</span><span class="tag">JS</span></span></span>
+                                <em class="w-en">NEON-CITY</em>
+                                <span class="w-desc">霓虹都市风格演示站，含 3D 超速走廊与开放世界狂飙。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                </ol>
+            </section>
+
+            <section id="skills" class="section rise r4">
+                <h2 class="sec-title"><span class="jp">段位</span><span class="en">SKILLS</span></h2>
+                <ul class="rank-list">
+                    <li>
+                        <span class="r-name">HTML ・ CSS</span>
+                        <span class="pips" aria-label="四段"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+                        <span class="r-rank">四段</span>
+                    </li>
+                    <li>
+                        <span class="r-name">JavaScript</span>
+                        <span class="pips" aria-label="三段"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>
+                        <span class="r-rank">三段</span>
+                    </li>
+                    <li>
+                        <span class="r-name">响应式布局</span>
+                        <span class="pips" aria-label="三段"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></span>
+                        <span class="r-rank">三段</span>
+                    </li>
+                    <li>
+                        <span class="r-name">摄影与审美</span>
+                        <span class="pips" aria-label="五段"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+                        <span class="r-rank">五段</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="notes" class="section rise r5">
+                <h2 class="sec-title"><span class="jp">随筆</span><span class="en">NOTES</span></h2>
+                <div class="quote-card">
+                    <p class="quote-v" id="quoteText"></p>
+                    <button class="quote-refresh" id="quoteRefresh">↻ 换一句</button>
                 </div>
+            </section>
 
-        <!-- 技能 -->
-        <div class="box" id="skills">
-            <div class="title"><span class="title-icon">🛠️</span>技能</div>
+            <section id="contact" class="section rise r6">
+                <h2 class="sec-title"><span class="jp">連絡</span><span class="en">CONTACT</span></h2>
+                <ul class="contact-list">
+                    <li>
+                        <a href="https://github.com/SuzunaCodeHime/" target="_blank" rel="noopener">
+                            <span class="num">壹</span>
+                            <span class="w-body">
+                                <span class="w-name">GitHub</span>
+                                <span class="c-desc">@SuzunaCodeHime —— 代码与成长记录之地。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://suzunacodehime.github.io/" target="_blank" rel="noopener">
+                            <span class="num">弐</span>
+                            <span class="w-body">
+                                <span class="w-name">个人主页</span>
+                                <span class="c-desc">suzunacodehime.github.io —— 一切开始的地方。</span>
+                            </span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </a>
+                    </li>
+                </ul>
+                <p class="contact-note">若有缘同路，欢迎来信相识。</p>
+            </section>
+        </main>
 
-            <div style="margin-top: 15px;">
-                <div class="skill-item">
-                    <div class="skill-header"><span>HTML / CSS</span><span>85%</span></div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" data-width="85"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-header"><span>JavaScript</span><span>70%</span></div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" data-width="70"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-header"><span>响应式布局</span><span>75%</span></div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" data-width="75"></div>
-                    </div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-header"><span>摄影与审美</span><span>90%</span></div>
-                    <div class="skill-bar">
-                        <div class="skill-fill" data-width="90"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 作品集 -->
-        <div class="box" id="projects">
-            <div class="title"><span class="title-icon">💻</span>我的作品</div>
-            <div class="project-grid">
-                <a class="project-card" href="https://suzunacodehime.github.io/Class-Attendance-System/"
-                    target="_blank">
-                    <div class="project-name">课堂点名系统</div>
-                    <div class="project-desc">基于前端技术实现的随机点名工具，简洁高效</div>
-                    <div class="project-tags">
-                        <span class="project-tag">HTML</span>
-                        <span class="project-tag">CSS</span>
-                        <span class="project-tag">JavaScript</span>
-                    </div>
-                </a>
-                <a class="project-card" href="https://suzunacodehime.github.io/520-Greeting-Card/" target="_blank">
-                    <div class="project-name">520 贺卡</div>
-                    <div class="project-desc">浪漫交互式电子贺卡，传递温柔心意</div>
-                    <div class="project-tags">
-                        <span class="project-tag">HTML</span>
-                        <span class="project-tag">CSS</span>
-                        <span class="project-tag">动画</span>
-                    </div>
-                </a>
-                <a class="project-card" href="https://suzunacodehime.github.io/2048/" target="_blank">
-                    <div class="project-name">2048小游戏</div>
-                    <div class="project-desc">基于H5实现的2048小游戏</div>
-                    <div class="project-tags">
-                        <span class="project-tag">JavaScript</span>
-                        <span class="project-tag">H5</span>
-                    </div>
-                </a>
-                <a class="project-card" href="https://suzunacodehime.github.io/Tool_Box/" target="_blank">
-                    <div class="project-name">Tool Box</div>
-                    <div class="project-desc">在线工具箱集合，聚合多种实用小工具</div>
-                    <div class="project-tags">
-                        <span class="project-tag">HTML</span>
-                        <span class="project-tag">CSS</span>
-                        <span class="project-tag">JavaScript</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 心情随笔 -->
-        <div class="box" id="thoughts">
-            <div class="title"><span class="title-icon">📝</span>随心随笔</div>
-            <div class="quote">
-                <p>不必迎合所有人，安稳自在便是最好。</p>
-            </div>
-            <div class="quote">
-                <p>好好生活，慢慢相遇，好好爱身边值得的人。</p>
-            </div>
-        </div>
-
-        <!-- 联系方式 -->
-        <div class="box" id="contact">
-            <div class="title"><span class="title-icon">📮</span>联系我</div>
-            <div class="contact-list">
-                <a class="contact-item" href="https://github.com/SuzunaCodeHime/" target="_blank">
-                    <span class="contact-icon">
-                        <svg viewBox="0 0 16 16" fill="currentColor">
-                            <path
-                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-                        </svg>
-                    </span>
-                    <div class="contact-info">
-                        <div class="contact-label">GitHub</div>
-                        <div class="contact-value">SuzunaCodeHime</div>
-                    </div>
-                </a>
-                <a class="contact-item" href="https://suzunacodehime.github.io/" target="_blank">
-                    <span class="contact-icon">🔗</span>
-                    <div class="contact-info">
-                        <div class="contact-label">个人主页</div>
-                        <div class="contact-value">suzunacodehime.github.io</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- 底部 -->
-        <div class="footer">
-            <div>愿岁月温柔以待 | 2026 个人作品集</div>
-            <div style="margin-top: 8px; font-size: 12px; opacity: 0.7;">Made with 💗 by SuzunaCodeHime</div>
-        </div>
+        <footer>
+            <div class="wave" aria-hidden="true"></div>
+            <p class="colophon">© 二〇二六 SuzunaCodeHime<span class="dot-sep">◆</span>和の作品集</p>
+        </footer>
     </div>
 
-    <!-- 回到顶部按钮 -->
-    <button class="top-btn" id="toTop">↑</button>
-
-    <script src="js/script.js"></script>
+    <script src="assets/js/main.js" defer></script>
 </body>
 
 </html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="赛博朋克风格演示页面 — NEON//CITY">
+<title>NEON CITY // 赛博朋克</title>
+<style>
+  :root {
+    --cyan: #e2718f;
+    --magenta: #ad5f86;
+    --yellow: #b07b32;
+    --purple: #9d8cd8;
+    --bg: #fdf4f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: #5c4f56;
+    font-family: "Courier New", "SF Mono", Menlo, monospace;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ---- 性能优化：网格动画改用 transform 而非 background-position，避免每帧重绘 ---- */
+  .grid-bg {
+    position: fixed;
+    inset: -100% -50% 0 -50%;
+    background-image:
+      linear-gradient(rgba(226, 113, 143, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(226, 113, 143, 0.12) 1px, transparent 1px);
+    background-size: 44px 44px;
+    transform: perspective(500px) rotateX(45deg);
+    transform-origin: center top;
+    z-index: -2;
+    pointer-events: none;
+    will-change: transform;
+    animation: gridmove 8s linear infinite;
+  }
+  @keyframes gridmove {
+    from { transform: perspective(500px) rotateX(45deg) translateY(0); }
+    to   { transform: perspective(500px) rotateX(45deg) translateY(44px); }
+  }
+
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      rgba(190, 130, 150, 0.07) 2px 4px
+    );
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  /* ---- 光晕：用低分辨率模糊替代 120px 大半径模糊，合成开销显著下降 ---- */
+  .glow {
+    position: fixed;
+    width: 60vmax;
+    height: 60vmax;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.25;
+    z-index: -1;
+    pointer-events: none;
+    transform: translateZ(0);
+  }
+  .glow.cyan    { background: radial-gradient(circle, var(--cyan), transparent 65%); top: -25vmax; left: -20vmax; }
+  .glow.magenta { background: radial-gradient(circle, var(--magenta), transparent 65%); bottom: -30vmax; right: -25vmax; }
+  .glow.purple  { background: radial-gradient(circle, var(--purple), transparent 65%); top: 35%; left: 55%; opacity: 0.15; }
+
+  /* ---- 头部：仅滚动时启用模糊，平时零开销 ---- */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px clamp(16px, 4vw, 40px);
+    border-bottom: 1px solid rgba(226, 113, 143, 0.25);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253, 244, 247, 0.8);
+    transition: backdrop-filter 0.3s, background 0.3s;
+  }
+  body.scrolled header {
+    background: rgba(253, 244, 247, 0.65);
+    backdrop-filter: blur(10px);
+  }
+
+  .logo {
+    font-size: clamp(1.1rem, 3vw, 1.6rem);
+    font-weight: bold;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan);
+    letter-spacing: 4px;
+  }
+  .logo span { color: var(--magenta); text-shadow: 0 0 10px var(--magenta), 0 0 30px var(--magenta); }
+
+  nav a {
+    color: #a3959c;
+    text-decoration: none;
+    margin-left: clamp(14px, 3vw, 26px);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+  nav a:hover { color: var(--yellow); text-shadow: 0 0 8px var(--yellow); }
+  nav a:focus-visible, .btn:focus-visible, .card:focus-visible {
+    outline: 2px solid var(--yellow);
+    outline-offset: 3px;
+  }
+
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: clamp(40px, 6vw, 60px) clamp(16px, 4vw, 30px);
+  }
+
+  /* ---- 故障标题 ---- */
+  .glitch {
+    font-size: clamp(2.2rem, 7vw, 4.6rem);
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 12px var(--cyan), 0 0 50px var(--cyan);
+    position: relative;
+    letter-spacing: 6px;
+    line-height: 1.2;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .glitch::before {
+    color: var(--magenta);
+    clip-path: inset(20% 0 55% 0);
+    animation: glitch1 2.5s infinite linear alternate-reverse;
+  }
+  .glitch::after {
+    color: var(--yellow);
+    clip-path: inset(60% 0 15% 0);
+    animation: glitch2 3s infinite linear alternate-reverse;
+  }
+  @keyframes glitch1 {
+    0%   { transform: translate(0); }
+    20%  { transform: translate(-6px, 2px); }
+    40%  { transform: translate(4px, -2px); }
+    60%  { transform: translate(-3px, 1px); }
+    100% { transform: translate(0); }
+  }
+  @keyframes glitch2 {
+    0%   { transform: translate(0); }
+    25%  { transform: translate(5px, -1px); }
+    50%  { transform: translate(-7px, 2px); }
+    75%  { transform: translate(3px, 1px); }
+    100% { transform: translate(0); }
+  }
+  .glitch.burst::before { animation: glitch1 0.25s linear infinite alternate-reverse; }
+  .glitch.burst::after  { animation: glitch2 0.3s linear infinite alternate-reverse; }
+
+  .subtitle {
+    margin-top: 18px;
+    font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+    color: var(--yellow);
+    text-shadow: 0 0 8px rgba(176, 123, 50, 0.6);
+    letter-spacing: 3px;
+  }
+  .subtitle::before { content: "> "; color: var(--magenta); }
+
+  /* ---- 滚动进场动画 ---- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  .panel {
+    margin-top: 50px;
+    border: 1px solid rgba(226, 113, 143, 0.4);
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 18px rgba(226, 113, 143, 0.15), inset 0 0 40px rgba(226, 113, 143, 0.05);
+    padding: 26px;
+    position: relative;
+    content-visibility: auto;
+    contain-intrinsic-size: 260px;
+  }
+  .panel::before {
+    content: "";
+    position: absolute;
+    top: -1px; left: 0;
+    width: 60px; height: 2px;
+    background: var(--yellow);
+    box-shadow: 0 0 12px var(--yellow);
+  }
+  .panel h2 {
+    color: var(--magenta);
+    text-shadow: 0 0 10px var(--magenta);
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    margin-bottom: 18px;
+  }
+  .panel h2::before { content: "▮ "; color: var(--cyan); }
+  .panel p { margin: 6px 0; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+    margin-top: 40px;
+  }
+  .card {
+    border: 1px solid rgba(157, 140, 216, 0.5);
+    background: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+    cursor: default;
+    will-change: transform;
+  }
+  .card:hover, .card:focus-visible {
+    transform: translateY(-6px);
+    border-color: var(--cyan);
+    box-shadow: 0 0 22px rgba(226, 113, 143, 0.2), 0 12px 28px rgba(120, 80, 95, 0.14);
+  }
+  .card .num { color: var(--yellow); font-size: 0.8rem; letter-spacing: 2px; }
+  .card h3 { color: var(--cyan); margin: 10px 0 8px; text-shadow: 0 0 8px rgba(226, 113, 143, 0.5); }
+  .card p { font-size: 0.9rem; color: #877a81; line-height: 1.7; }
+
+  /* ---- 终端 ---- */
+  .terminal {
+    margin-top: 50px;
+    background: #fffdfa;
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 25px rgba(226, 113, 143, 0.25);
+    padding: 20px 24px;
+    font-size: 0.92rem;
+    line-height: 1.9;
+    content-visibility: auto;
+    contain-intrinsic-size: 340px;
+  }
+  .terminal .bar {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(226, 113, 143, 0.3);
+    padding-bottom: 8px;
+    margin-bottom: 14px;
+    color: var(--yellow);
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+  .terminal .dots span { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 50%; }
+  .dots .r { background: var(--magenta); } .dots .y { background: var(--yellow); } .dots .g { background: var(--cyan); }
+  .t-c { color: var(--cyan); }
+  .t-m { color: var(--magenta); }
+  .t-y { color: var(--yellow); }
+  .t-g { color: #4f9e69; }
+  .cursor {
+    display: inline-block;
+    width: 10px; height: 16px;
+    background: var(--cyan);
+    animation: blink 1s steps(1) infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid rgba(173, 95, 134, 0.3);
+    color: #9c8d94;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+  }
+  footer b { color: var(--magenta); }
+
+  .btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 14px 34px;
+    border: 1px solid var(--magenta);
+    color: var(--magenta);
+    text-decoration: none;
+    letter-spacing: 4px;
+    text-shadow: 0 0 8px var(--magenta);
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-row { margin-top: 30px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .btn-row .btn { margin-top: 0; }
+  .btn:hover {
+    background: var(--magenta);
+    color: #fff;
+    box-shadow: 0 0 30px rgba(173, 95, 134, 0.7);
+  }
+
+  /* ---- 降低动态效果偏好 ---- */
+  @media (prefers-reduced-motion: reduce) {
+    .grid-bg, .glitch::before, .glitch::after, .cursor { animation: none; }
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .card:hover, .card:focus-visible { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+<div class="glow cyan"></div>
+<div class="glow magenta"></div>
+<div class="glow purple"></div>
+
+<header>
+  <div class="logo">NEON<span>//</span>CITY</div>
+  <nav aria-label="主导航">
+    <a href="#hero">首页</a>
+    <a href="#cards">新闻</a>
+    <a href="#data">数据</a>
+    <a href="#terminal">终端</a>
+  </nav>
+</header>
+
+<main id="hero">
+  <h1 class="glitch" data-text="未来已至。" tabindex="0" aria-label="未来已至">未来已至。</h1>
+  <p class="subtitle">欢迎来到 2077 年的新东京 — 在这里，霓虹与代码即是信仰。</p>
+
+  <div class="cards reveal" id="cards">
+    <div class="card" tabindex="0">
+      <div class="num">[ 01 ]</div>
+      <h3>神经植入</h3>
+      <p>第七代脑机接口现已发售。下载技能，上传记忆，体验纯粹数字永生。</p>
+    </div>
+    <div class="card" tabindex="0">
+      <div class="num">[ 02 ]</div>
+      <h3>黑市芯片</h3>
+      <p>未经授权的军用级芯片，绕过所有防火墙。风险自负，收益可观。</p>
+    </div>
+    <div class="card" tabindex="0">
+      <div class="num">[ 03 ]</div>
+      <h3>义体改造</h3>
+      <p>钛合金骨架、光学义眼、皮下装甲。肉身已过时，强化即自由。</p>
+    </div>
+  </div>
+
+  <div class="terminal reveal" id="terminal" aria-label="模拟终端">
+    <div class="bar">
+      <span>NIGHTCITY_TERMINAL.EXE</span>
+      <span class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></span>
+    </div>
+    <div id="t-out" role="log" aria-live="polite"></div>
+  </div>
+
+  <div class="panel reveal" id="data">
+    <h2>城市实时数据</h2>
+    <p>人口：<span class="t-y" id="d-pop">12,482,913</span> <span class="t-y">▲ 动态</span></p>
+    <p>犯罪率：<span class="t-m" id="d-crime">78.2</span>% <span class="t-m">▲ 持续攀升</span></p>
+    <p>网络流量：<span class="t-g" id="d-flow">9.4</span> EB/s <span class="t-g">◆ 历史峰值</span></p>
+    <p>黑市交易额：<span class="t-y" id="d-market">4.2</span> 万亿 <span class="t-m">▼ 官方否认</span></p>
+  </div>
+
+  <div class="btn-row reveal">
+    <a href="game.html" class="btn">进入夜之城</a>
+    <a href="race.html" class="btn">霓虹环城赛 3D</a>
+  </div>
+</main>
+
+<footer>
+  © 2077 NEON//CITY — 本页面已受 <b>ghost_protocol</b> 保护 · 无需许可，尽情分享
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* 滚动时启用头部模糊 */
+  const onScroll = () => document.body.classList.toggle("scrolled", window.scrollY > 8);
+  addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* 滚动进场动画（IntersectionObserver，仅触发一次） */
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        io.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+
+  /* 标题随机故障爆发 */
+  const glitch = document.querySelector(".glitch");
+  setInterval(() => {
+    glitch.classList.add("burst");
+    setTimeout(() => glitch.classList.remove("burst"), 260);
+  }, 5200 + Math.random() * 4000);
+
+  /* 终端打字机效果 */
+  const lines = [
+    { cls: "t-c", text: "user@nightcity:~$ connect --target 夜之城中央网络" },
+    { cls: "t-c", text: "user@nightcity:~$ scan --encrypted" },
+    { cls: "t-m", text: "[警告] " },
+    { cls: "t-y", text: "检测到 3 个入侵信号，正在追踪... 追踪失败。来源：未知。" },
+    { cls: "t-c", text: "user@nightcity:~$ run " },
+    { cls: "t-m", text: "ghost_protocol" },
+    { cls: "t-g", text: ">> 幽灵协议已激活。你的信号已从网络中抹除。安全。安全。安全。" },
+    { cls: "t-c", text: "user@nightcity:~$ " },
+  ];
+  const out = document.getElementById("t-out");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let li = 0, ci = 0, cursorEl = null;
+
+  function typeLine() {
+    if (li >= lines.length) return;
+    const line = lines[li];
+    if (ci === 0) {
+      const p = document.createElement("p");
+      p.innerHTML = line.cls ? `<span class="${line.cls}"></span>` : "";
+      out.appendChild(p);
+      cursorEl = p;
+    }
+    const span = cursorEl.querySelector("span");
+    if (span && ci <= line.text.length) span.textContent = line.text.slice(0, ci);
+    if (ci <= line.text.length) {
+      ci++;
+      setTimeout(typeLine, reduce ? 0 : 18 + Math.random() * 40);
+    } else {
+      const c = document.createElement("span");
+      c.className = "cursor";
+      cursorEl.appendChild(c);
+      li++; ci = 0;
+      setTimeout(typeLine, reduce ? 100 : 380);
+    }
+  }
+  const tObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      typeLine();
+      tObs.disconnect();
+    }
+  }, { threshold: 0.3 });
+  tObs.observe(out);
+
+  /* 实时数据滚动刷新 */
+  const pop = document.getElementById("d-pop");
+  const crime = document.getElementById("d-crime");
+  const flow = document.getElementById("d-flow");
+  const market = document.getElementById("d-market");
+  const fmt = (n) => n.toLocaleString("en-US");
+  let popV = 12482913, crimeV = 78.2, flowV = 9.4, marketV = 4.2;
+  setInterval(() => {
+    popV += Math.floor(Math.random() * 40) - 12;
+    crimeV = Math.min(85, Math.max(70, crimeV + (Math.random() * 0.6 - 0.2)));
+    flowV += Math.random() * 0.8 - 0.35;
+    marketV = Math.max(1, marketV + (Math.random() * 0.5 - 0.2));
+    pop.textContent = fmt(popV);
+    crime.textContent = crimeV.toFixed(1);
+    flow.textContent = flowV.toFixed(1);
+    market.textContent = marketV.toFixed(1);
+  }, 4000);
+})();
+</script>
+
+</body>
+</html>

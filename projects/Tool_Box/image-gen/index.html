@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 图像生成 - Tool Box</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+<header>
+    <a href="../index.html">←</a>
+    <h1>AI 图像生成</h1>
+</header>
+
+<div class="card">
+    <div class="field">
+        <label>供应商</label>
+        <select id="provider"></select>
+    </div>
+    <div class="field" id="apiKeyField">
+        <label>API Key</label>
+        <div class="key-row">
+            <input type="password" id="apiKey" placeholder="输入 API Key">
+            <button id="saveKeyBtn" class="secondary">保存</button>
+            <button id="testKeyBtn" class="secondary">检测</button>
+        </div>
+        <div class="key-hint" id="keyHint"></div>
+    </div>
+    <div class="field hidden" id="endpointField">
+        <label>API 地址</label>
+        <input type="url" id="customEndpoint" placeholder="https://api.openai.com/v1">
+    </div>
+    <div class="field-row">
+        <div class="field flex-1">
+            <label>模型</label>
+            <div class="model-row">
+                <select id="model"></select>
+                <button id="refreshModelsBtn" class="secondary" title="从 API 刷新模型列表">⟳</button>
+            </div>
+        </div>
+        <div class="field flex-1">
+            <label>数量</label>
+            <select id="count"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        </div>
+    </div>
+    <div class="field hidden" id="modelCustomField">
+        <label>自定义模型名称</label>
+        <input type="text" id="customModel" placeholder="输入模型名称，如 dall-e-3">
+    </div>
+    <div class="field">
+        <label>尺寸</label>
+        <select id="size"></select>
+    </div>
+    <div class="field hidden" id="customSizeField">
+        <div class="size-custom">
+            <input type="number" id="customW" placeholder="宽" min="64" max="4096" step="64" value="1024">
+            <span>×</span>
+            <input type="number" id="customH" placeholder="高" min="64" max="4096" step="64" value="1024">
+        </div>
+    </div>
+    <div class="field hidden" id="qualityField">
+        <label>质量</label>
+        <select id="quality"><option value="standard">标准</option><option value="hd">高清 (HD)</option></select>
+    </div>
+    <div class="field hidden" id="styleField">
+        <label>风格</label>
+        <select id="style"><option value="vivid">鲜艳 (Vivid)</option><option value="natural">自然 (Natural)</option></select>
+    </div>
+    <div class="field hidden" id="watermarkField">
+        <div class="watermark-row">
+            <input type="checkbox" id="watermarkEnabled">
+            <label for="watermarkEnabled">AI 生成水印</label>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="field">
+        <label>Prompt</label>
+        <textarea id="prompt" placeholder="描述你想要生成的图像..." rows="4"></textarea>
+    </div>
+    <div class="field hidden" id="negativeField">
+        <label>Negative Prompt</label>
+        <textarea id="negativePrompt" placeholder="不想要的内容（可选）" rows="2"></textarea>
+    </div>
+    <button id="generateBtn" class="primary">✨ 生成图像</button>
+</div>
+
+<div class="card" id="codeExampleSection">
+    <button id="codeToggleBtn" class="toggle-btn">▸ 查看 API 调用示例</button>
+    <div id="codeContent" class="code-content hidden">
+        <div class="code-tabs">
+            <button class="code-tab active" data-lang="curl">cURL</button>
+            <button class="code-tab" data-lang="python">Python</button>
+            <button class="code-tab" data-lang="java">Java</button>
+        </div>
+        <pre id="codeDisplay" class="code-block"></pre>
+        <button id="copyCodeBtn" class="secondary">复制代码</button>
+    </div>
+</div>
+
+<div id="resultSection" class="hidden">
+    <div class="section-header">
+        <h2>结果</h2>
+        <span id="revisedPrompt" class="revised-prompt"></span>
+    </div>
+    <div id="resultGrid" class="result-grid"></div>
+</div>
+
+<div id="historySection">
+    <div class="section-header"><h2>历史记录</h2></div>
+    <div id="historyGrid" class="history-grid"><p class="empty-hint">暂无记录</p></div>
+</div>
+
+<div id="loadingOverlay" class="hidden">
+    <div class="spinner"></div>
+    <p id="loadingText">正在生成...</p>
+</div>
+
+<footer>Tool Box &copy; 2026 &middot; SuzunaCodeHime</footer>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>

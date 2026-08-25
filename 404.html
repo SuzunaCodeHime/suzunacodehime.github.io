@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404｜迷路了 · SuzunaCodeHime</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23cb4042'/%3E%3Ctext x='32' y='44' font-size='34' font-family='serif' fill='%23fdf8ef' text-anchor='middle'%3E%E9%88%B4%3C/text%3E%3C/svg%3E">
+    <style>
+        :root {
+            --paper: #f6f2e9;
+            --ink: #26324e;
+            --ink-dim: #6c7590;
+            --hairline: rgba(38, 50, 78, 0.16);
+            --shu: #cb4042;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(circle at 78% 18%, rgba(203, 64, 66, 0.1), transparent 34%),
+                var(--paper);
+            color: var(--ink);
+            font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", "Source Han Serif SC", "Songti SC", "STSong", serif;
+            text-align: center;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+        }
+
+        .box {
+            position: relative;
+            z-index: 1;
+        }
+
+        .code {
+            font-size: clamp(72px, 16vw, 130px);
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            line-height: 1.2;
+        }
+
+        .code .zero {
+            color: var(--shu);
+        }
+
+        .msg {
+            margin-top: 6px;
+            font-size: clamp(19px, 3vw, 25px);
+            letter-spacing: 0.42em;
+            text-indent: 0.42em;
+        }
+
+        .sub {
+            margin-top: 16px;
+            font-size: 13px;
+            letter-spacing: 0.16em;
+            color: var(--ink-dim);
+        }
+
+        .rule {
+            width: 46px;
+            height: 1px;
+            background: var(--hairline);
+            margin: 34px auto;
+            position: relative;
+        }
+
+        .rule::after {
+            content: "◆";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -54%);
+            color: var(--shu);
+            font-size: 11px;
+            background: var(--paper);
+            padding: 0 10px;
+        }
+
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 26px;
+            font-size: 14px;
+            letter-spacing: 0.14em;
+        }
+
+        .links a {
+            color: var(--ink);
+            text-decoration: none;
+            padding-bottom: 3px;
+            border-bottom: 1px solid transparent;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: var(--shu);
+            border-bottom-color: var(--shu);
+        }
+
+        .side {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            writing-mode: vertical-rl;
+            font-size: 12px;
+            letter-spacing: 0.5em;
+            color: var(--ink-dim);
+            opacity: 0.7;
+            user-select: none;
+        }
+
+        @media (max-width: 600px) {
+            .side { display: none; }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="box">
+        <p class="code">4<span class="zero">0</span>4</p>
+        <p class="msg">迷 路 了</p>
+        <p class="sub">页面如落花，飘散在无人的小径 —— 请从下方归途返回。</p>
+        <div class="rule" aria-hidden="true"></div>
+        <nav class="links">
+            <a href="/index.html">← 返回主页</a>
+            <a href="https://github.com/SuzunaCodeHime/" target="_blank" rel="noopener">GitHub →</a>
+        </nav>
+    </main>
+    <aside class="side" aria-hidden="true">道に迷いました</aside>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>520致我最爱的妈妈</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #ffe8ef;
+            text-align: center;
+            padding: 60px 15px;
+            overflow-x: hidden;
+        }
+        h1 {
+            color: #e64c78;
+            font-size: 34px;
+            margin-bottom: 35px;
+        }
+        .say-text {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            font-size: 18px;
+            color: #555;
+            line-height: 2.1;
+            min-height: 160px;
+        }
+        .btn {
+            margin-top: 25px;
+            padding: 12px 40px;
+            border: none;
+            background-color: #ff6b8b;
+            color: #fff;
+            font-size: 17px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background-color: #e64c78;
+        }
+        .love {
+            position: absolute;
+            color: #ff5079;
+            font-size: 22px;
+            user-select: none;
+            z-index: -1;
+        }
+
+        /* 手机适配 */
+        @media (max-width: 768px) {
+            body{
+                padding-top: 40px;
+            }
+            h1{
+                font-size: 26px;
+            }
+            .say-text{
+                font-size: 16px;
+            }
+            .btn{
+                width: 80%;
+                padding: 14px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>💖 520 致全世界最好的妈妈 💖</h1>
+    <div class="say-text" id="textBox"></div>
+    <button class="btn" id="btn">点击收下我的爱意</button>
+
+    <script>
+        var textBox = document.getElementById("textBox");
+        var btn = document.getElementById("btn");
+
+        // 修复方案：用数组存每一行，自动换行，不显示br！
+        var msgList = [
+            "亲爱的妈妈：",
+            "从小到大辛苦您啦，谢谢您包容我的所有小情绪。",
+            "520不止是情侣的节日，更是我向您表达爱意的日子。",
+            "愿岁月温柔待您，永远平安健康，无忧无虑，青春永驻，我永远最爱您！"
+        ];
+        var lineIndex = 0;  // 行数
+        var wordIndex = 0;  // 字数
+
+        // 逐行+逐字打印，自动换行，不显示br标签！
+        function printWord(){
+            if(lineIndex < msgList.length){
+                var currentLine = msgList[lineIndex];
+                if(wordIndex < currentLine.length){
+                    textBox.innerHTML += currentLine.charAt(wordIndex);
+                    wordIndex++;
+                    setTimeout(printWord,80);
+                }else{
+                    // 一行打完，自动换行
+                    textBox.innerHTML += "<br>";
+                    wordIndex = 0;
+                    lineIndex++;
+                    setTimeout(printWord,80);
+                }
+            }
+        }
+
+        window.onload = printWord;
+
+        // 点击弹窗
+        btn.onclick = function(){
+            alert("妈妈~520快乐❤️ 往后余生我好好孝顺您！");
+        }
+
+        // 爱心飘落
+        function createLove(){
+            var love = document.createElement("div");
+            love.className = "love";
+            love.innerHTML = "❤";
+            var leftPos = Math.random() * window.innerWidth;
+            love.style.left = leftPos + "px";
+            love.style.top = "-30px";
+            document.body.appendChild(love);
+
+            var speed = Math.random()*3+2;
+            function fall(){
+                var top = parseInt(love.style.top);
+                love.style.top = top + speed + "px";
+                if(top > window.innerHeight){
+                    document.body.removeChild(love);
+                }
+                requestAnimationFrame(fall);
+            }
+            fall();
+        }
+        setInterval(createLove,300);
+    </script>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="夜之城 — 赛博朋克 3D 隧道飞行游戏">
+<title>夜之城 // 3D 超速走廊</title>
+<style>
+  :root {
+    --cyan: #e2718f;
+    --magenta: #ad5f86;
+    --yellow: #b07b32;
+    --bg: #fdf4f7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: #5c4f56;
+    font-family: "Courier New", "SF Mono", Menlo, monospace;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: -100% -50% 0 -50%;
+    background-image:
+      linear-gradient(rgba(226, 113, 143, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(226, 113, 143, 0.12) 1px, transparent 1px);
+    background-size: 44px 44px;
+    transform: perspective(500px) rotateX(45deg);
+    transform-origin: center top;
+    z-index: -2;
+    pointer-events: none;
+    will-change: transform;
+    animation: gridmove 8s linear infinite;
+  }
+  @keyframes gridmove {
+    from { transform: perspective(500px) rotateX(45deg) translateY(0); }
+    to   { transform: perspective(500px) rotateX(45deg) translateY(44px); }
+  }
+
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0 2px,
+      rgba(190, 130, 150, 0.07) 2px 4px
+    );
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px clamp(16px, 4vw, 40px);
+    border-bottom: 1px solid rgba(226, 113, 143, 0.25);
+    background: rgba(253, 244, 247, 0.8);
+  }
+
+  .logo {
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: bold;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan), 0 0 30px var(--cyan);
+    letter-spacing: 4px;
+  }
+  .logo span { color: var(--magenta); text-shadow: 0 0 10px var(--magenta), 0 0 30px var(--magenta); }
+
+  .back {
+    color: #a3959c;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    transition: 0.3s;
+  }
+  .back:hover { color: var(--yellow); text-shadow: 0 0 8px var(--yellow); }
+
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: clamp(20px, 4vw, 40px) clamp(12px, 4vw, 30px) 50px;
+  }
+
+  .glitch {
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 12px var(--cyan), 0 0 50px var(--cyan);
+    position: relative;
+    letter-spacing: 5px;
+    line-height: 1.2;
+    display: inline-block;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .glitch::before {
+    color: var(--magenta);
+    clip-path: inset(20% 0 55% 0);
+    animation: g1 2.5s infinite linear alternate-reverse;
+  }
+  .glitch::after {
+    color: var(--yellow);
+    clip-path: inset(60% 0 15% 0);
+    animation: g2 3s infinite linear alternate-reverse;
+  }
+  @keyframes g1 {
+    0% { transform: translate(0); }
+    20% { transform: translate(-5px, 2px); }
+    40% { transform: translate(4px, -2px); }
+    100% { transform: translate(0); }
+  }
+  @keyframes g2 {
+    0% { transform: translate(0); }
+    25% { transform: translate(4px, -1px); }
+    50% { transform: translate(-6px, 2px); }
+    100% { transform: translate(0); }
+  }
+
+  .hint { margin: 14px 0 18px; color: var(--yellow); font-size: 0.9rem; letter-spacing: 2px; }
+  .hint::before { content: "> "; color: var(--magenta); }
+
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(226, 113, 143, 0.4);
+    background: rgba(255, 255, 255, 0.6);
+    padding: 10px 18px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+  }
+  .hud b { color: var(--cyan); text-shadow: 0 0 8px rgba(226, 113, 143, 0.6); }
+  .hud .lives { color: var(--magenta); text-shadow: 0 0 8px rgba(173, 95, 134, 0.6); letter-spacing: 6px; }
+
+  .wrap { position: relative; width: 100%; max-width: 960px; margin: 0 auto; }
+
+  canvas {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #fffdfa;
+    border: 1px solid var(--cyan);
+    box-shadow: 0 0 30px rgba(226, 113, 143, 0.25), inset 0 0 60px rgba(226, 113, 143, 0.06);
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    background: rgba(253, 244, 247, 0.78);
+    backdrop-filter: blur(3px);
+    text-align: center;
+    padding: 20px;
+    z-index: 5;
+  }
+  .overlay h2 {
+    color: var(--cyan);
+    text-shadow: 0 0 14px var(--cyan);
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    letter-spacing: 6px;
+  }
+  .overlay p { color: #877a81; font-size: 0.95rem; line-height: 1.8; letter-spacing: 1px; }
+  .overlay .big { color: var(--yellow); text-shadow: 0 0 10px rgba(176, 123, 50, 0.7); font-size: 1.3rem; }
+
+  .btn {
+    padding: 13px 32px;
+    border: 1px solid var(--magenta);
+    color: var(--magenta);
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    letter-spacing: 4px;
+    text-shadow: 0 0 8px var(--magenta);
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .btn:hover {
+    background: var(--magenta);
+    color: #fff;
+    box-shadow: 0 0 30px rgba(173, 95, 134, 0.7);
+  }
+  .btn:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+
+  .hidden { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid-bg, .glitch::before, .glitch::after { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+
+<header>
+  <div class="logo">NEON<span>//</span>CITY</div>
+  <a class="back" href="index.html">← 返回主页</a>
+</header>
+
+<main>
+  <h1 class="glitch" data-text="超速走廊 3D">超速走廊 3D</h1>
+  <p class="hint">← → / A D / 鼠标或触屏 · 收集数据核心 +10 分 · 穿越防火墙 +5 分 · 撞击扣除生命</p>
+
+  <div class="hud">
+    <span>得分 <b id="score">0000</b></span>
+    <span>生命 <span class="lives" id="lives">♥♥♥</span></span>
+    <span>速度 <b id="speed">0</b> km/h</span>
+  </div>
+
+  <div class="wrap">
+    <canvas id="game"></canvas>
+
+    <div class="overlay" id="over-start">
+      <h2>接入夜之城 3D 网络</h2>
+      <p id="load-msg">正在加载 3D 引擎...</p>
+      <button class="btn hidden" id="btn-start">启动引擎</button>
+    </div>
+
+    <div class="overlay hidden" id="over-end">
+      <h2>连接被切断</h2>
+      <p class="big">最终得分 <span id="final-score">0</span></p>
+      <p>防火墙已检测到你的踪迹。重新路由后再次入侵。</p>
+      <button class="btn" id="btn-restart">重新接入</button>
+    </div>
+  </div>
+</main>
+
+<script src="https://unpkg.com/three@0.152.2/build/three.min.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  const wrap = document.querySelector(".wrap");
+  const canvas = document.getElementById("game");
+  const scoreEl = document.getElementById("score");
+  const livesEl = document.getElementById("lives");
+  const speedEl = document.getElementById("speed");
+  const overlayStart = document.getElementById("over-start");
+  const overlayEnd = document.getElementById("over-end");
+  const finalScoreEl = document.getElementById("final-score");
+  const loadMsg = document.getElementById("load-msg");
+  const btnStart = document.getElementById("btn-start");
+
+  if (typeof THREE === "undefined") {
+    loadMsg.textContent = "3D 引擎加载失败，请检查网络连接后刷新。";
+    return;
+  }
+  loadMsg.textContent = "引擎就绪，随时启动。";
+  btnStart.classList.remove("hidden");
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x05060f);
+  scene.fog = new THREE.Fog(0x05060f, 22, 95);
+
+  const camera = new THREE.PerspectiveCamera(75, 16 / 9, 0.1, 300);
+  camera.position.set(0, 3.4, 9);
+  camera.lookAt(0, 1.4, -8);
+
+  scene.add(new THREE.AmbientLight(0x334466, 0.9));
+  const shipLight = new THREE.PointLight(0x00f0ff, 1.4, 16);
+  shipLight.position.set(0, 1.6, 1);
+  scene.add(shipLight);
+
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+  function glowTexture(color) {
+    const c = document.createElement("canvas");
+    c.width = c.height = 128;
+    const g = c.getContext("2d");
+    const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grad.addColorStop(0, color);
+    grad.addColorStop(0.35, color + "88");
+    grad.addColorStop(1, "transparent");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 128, 128);
+    const t = new THREE.CanvasTexture(c);
+    return t;
+  }
+  const texCyan = glowTexture("#e2718f");
+  const texYellow = glowTexture("#b07b32");
+  const texMagenta = glowTexture("#ad5f86");
+
+  const ship = new THREE.Group();
+  const body = new THREE.Mesh(
+    new THREE.ConeGeometry(0.55, 1.7, 4),
+    new THREE.MeshStandardMaterial({ color: 0x06222b, emissive: 0x00f0ff, emissiveIntensity: 0.9, metalness: 0.4, roughness: 0.3 })
+  );
+  body.rotation.x = -Math.PI / 2;
+  body.position.z = -0.3;
+  const wing = new THREE.Mesh(
+    new THREE.BoxGeometry(2.6, 0.07, 0.95),
+    new THREE.MeshStandardMaterial({ color: 0x06222b, emissive: 0x00f0ff, emissiveIntensity: 0.55 })
+  );
+  const engine = new THREE.Sprite(new THREE.SpriteMaterial({ map: texCyan, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
+  engine.scale.set(1.6, 1.6, 1);
+  engine.position.z = 1.1;
+  ship.add(body, wing, engine);
+  ship.position.set(0, 1.4, 0);
+  scene.add(ship);
+
+  const ground = new THREE.GridHelper(300, 60, 0x00f0ff, 0x004455);
+  ground.material.transparent = true;
+  ground.material.opacity = 0.55;
+  scene.add(ground);
+
+  const PILLAR_SPAN = 72;
+  const pillars = [];
+  for (let i = 0; i < 10; i++) {
+    for (const side of [-1, 1]) {
+      const m = new THREE.Mesh(
+        new THREE.BoxGeometry(1.1, 5, 1.1),
+        new THREE.MeshStandardMaterial({ color: 0x14031f, emissive: 0xb026ff, emissiveIntensity: 0.9 })
+      );
+      m.position.y = 2.5;
+      scene.add(m);
+      pillars.push({ mesh: m, z: -6 - i * 7.2, side });
+    }
+  }
+
+  const LANES = [-4.2, 0, 4.2];
+  const barrierMat = new THREE.MeshStandardMaterial({ color: 0x22000a, emissive: 0xff2d78, emissiveIntensity: 1.3 });
+  const barriers = [];
+  for (let i = 0; i < 30; i++) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(2.3, 3.4, 1.1), barrierMat);
+    m.position.y = 1.9;
+    m.visible = false;
+    scene.add(m);
+    barriers.push(m);
+  }
+  let bIdx = 0;
+
+  const orbMat = new THREE.MeshStandardMaterial({ color: 0x221d00, emissive: 0xffe600, emissiveIntensity: 1.6 });
+  const orbs = [];
+  const orbSprites = [];
+  for (let i = 0; i < 20; i++) {
+    const m = new THREE.Mesh(new THREE.IcosahedronGeometry(0.42, 0), orbMat);
+    m.visible = false;
+    scene.add(m);
+    orbs.push(m);
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: texYellow, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.9 }));
+    s.scale.set(2.4, 2.4, 1);
+    s.visible = false;
+    scene.add(s);
+    orbSprites.push(s);
+  }
+  let oIdx = 0;
+
+  const partTex = [texCyan, texYellow, texMagenta];
+  const parts = [];
+  for (let i = 0; i < 90; i++) {
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: partTex[i % 3], blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }));
+    s.visible = false;
+    scene.add(s);
+    parts.push({ sprite: s, vx: 0, vy: 0, vz: 0, life: 0, max: 1 });
+  }
+  let pIdx = 0;
+
+  const state = {
+    mode: "ready",
+    score: 0,
+    lives: 3,
+    speed: 26,
+    spawnT: 1.1,
+    orbT: 2.4,
+    invincible: 0,
+    shake: 0,
+    time: 0,
+  };
+  const player = { x: 0, tx: 0 };
+  const keys = { left: false, right: false };
+  const X_LIMIT = 5.4;
+
+  function reset() {
+    state.mode = "playing";
+    state.score = 0;
+    state.lives = 3;
+    state.speed = 26;
+    state.spawnT = 1.1;
+    state.orbT = 2.4;
+    state.invincible = 0;
+    state.shake = 0;
+    state.time = 0;
+    player.x = 0;
+    player.tx = 0;
+    barriers.forEach((m) => (m.visible = false));
+    orbs.forEach((m) => (m.visible = false));
+    orbSprites.forEach((s) => (s.visible = false));
+    parts.forEach((p) => (p.sprite.visible = false));
+    updateHud();
+  }
+
+  function updateHud() {
+    scoreEl.textContent = String(state.score).padStart(4, "0");
+    livesEl.textContent = "♥".repeat(state.lives) + "♡".repeat(3 - state.lives);
+    speedEl.textContent = Math.round(state.speed * 9);
+  }
+
+  function spawnBarrier() {
+    const m = barriers[bIdx];
+    bIdx = (bIdx + 1) % barriers.length;
+    m.visible = true;
+    m.position.x = LANES[Math.floor(Math.random() * LANES.length)];
+    m.position.z = -95;
+  }
+
+  function spawnOrb() {
+    const m = orbs[oIdx];
+    const s = orbSprites[oIdx];
+    oIdx = (oIdx + 1) % orbs.length;
+    m.visible = true;
+    s.visible = true;
+    m.position.x = (Math.random() - 0.5) * 8.6;
+    m.position.y = 1.4;
+    m.position.z = -95;
+    s.position.copy(m.position);
+  }
+
+  function burst(x, y, z, tex, n) {
+    for (let i = 0; i < n; i++) {
+      const p = parts[pIdx];
+      pIdx = (pIdx + 1) % parts.length;
+      p.sprite.visible = true;
+      p.sprite.material.map = tex;
+      p.sprite.position.set(x, y, z);
+      const sc = 1 + Math.random() * 1.6;
+      p.sprite.scale.set(sc, sc, 1);
+      const a = Math.random() * Math.PI * 2;
+      const sp = 4 + Math.random() * 9;
+      p.vx = Math.cos(a) * sp;
+      p.vy = Math.sin(a) * sp;
+      p.vz = 4 + Math.random() * 8;
+      p.max = p.life = 0.45 + Math.random() * 0.35;
+    }
+  }
+
+  function hitPlayer(m) {
+    state.lives--;
+    state.invincible = 1.6;
+    state.shake = 0.35;
+    burst(m.position.x, m.position.y, m.position.z, texMagenta, 26);
+    m.visible = false;
+    updateHud();
+    if (state.lives <= 0) {
+      state.mode = "over";
+      finalScoreEl.textContent = state.score;
+      overlayEnd.classList.remove("hidden");
+    }
+  }
+
+  function update(dt) {
+    if (state.mode !== "playing") return;
+    state.time += dt;
+    state.shake = Math.max(0, state.shake - dt);
+    state.invincible = Math.max(0, state.invincible - dt);
+
+    const k = 1 - Math.exp(-11 * dt);
+    if (keys.left) player.tx -= 5.2 * dt * 1.4;
+    if (keys.right) player.tx += 5.2 * dt * 1.4;
+    player.tx = clamp(player.tx, -X_LIMIT, X_LIMIT);
+    player.x += (player.tx - player.x) * k;
+
+    const acc = state.score * 0.55;
+    state.speed = Math.min(64, 26 + acc);
+
+    ship.position.x = player.x;
+    ship.rotation.z = -player.x * 0.16;
+    ship.rotation.y = -player.x * 0.12;
+    ship.position.y = 1.4 + Math.sin(state.time * 2.2) * 0.07;
+    ship.visible = !(state.invincible > 0 && Math.floor(state.time * 14) % 2 === 0);
+    shipLight.position.x = player.x;
+
+    ground.position.z = (ground.position.z + state.speed * dt) % 5;
+
+    for (const p of pillars) {
+      p.z += state.speed * dt;
+      if (p.z > 12) p.z -= PILLAR_SPAN;
+      p.mesh.position.x = p.side * 7.6;
+      p.mesh.position.z = p.z;
+    }
+
+    state.spawnT -= dt;
+    if (state.spawnT <= 0) {
+      spawnBarrier();
+      state.spawnT = Math.max(0.5, 1.35 - state.score * 0.005);
+    }
+    state.orbT -= dt;
+    if (state.orbT <= 0) {
+      spawnOrb();
+      state.orbT = 2.2 + Math.random() * 2;
+    }
+
+    for (const m of barriers) {
+      if (!m.visible) continue;
+      m.position.z += state.speed * dt;
+      m.rotation.y += dt * 1.2;
+      if (m.position.z > 14) { m.visible = false; continue; }
+      if (state.invincible <= 0 &&
+          Math.abs(m.position.x - player.x) < 1.15 + 0.75 &&
+          Math.abs(m.position.z) < 0.55 + 0.8) {
+        hitPlayer(m);
+        if (state.mode !== "playing") return;
+      }
+    }
+
+    for (let i = 0; i < orbs.length; i++) {
+      const m = orbs[i];
+      if (!m.visible) continue;
+      m.position.z += state.speed * dt;
+      m.rotation.y += dt * 2.4;
+      const s = orbSprites[i];
+      s.position.copy(m.position);
+      if (m.position.z > 12) { m.visible = false; s.visible = false; continue; }
+      const dx = m.position.x - player.x;
+      const dz = m.position.z;
+      if (dx * dx + dz * dz < 1.5 * 1.5) {
+        m.visible = false;
+        s.visible = false;
+        state.score += 10;
+        burst(m.position.x, m.position.y, m.position.z, texYellow, 14);
+        updateHud();
+      }
+    }
+
+    for (const p of parts) {
+      if (!p.sprite.visible) continue;
+      p.life -= dt;
+      if (p.life <= 0) { p.sprite.visible = false; continue; }
+      p.sprite.position.x += p.vx * dt;
+      p.sprite.position.y += p.vy * dt;
+      p.sprite.position.z += (p.vz + state.speed) * dt;
+      const s = Math.max(0.3, p.sprite.scale.x * 0.96);
+      p.sprite.scale.set(s, s, 1);
+      p.sprite.material.opacity = clamp(p.life / p.max, 0, 1);
+    }
+
+    camera.position.x = player.x * 0.4 + (state.shake > 0 ? (Math.random() - 0.5) * 0.5 : 0);
+    camera.position.y = 3.4 + (state.shake > 0 ? (Math.random() - 0.5) * 0.3 : 0);
+    camera.lookAt(player.x * 0.55, 1.4, -8);
+  }
+
+  function fit() {
+    const w = wrap.clientWidth;
+    const h = w * 9 / 16;
+    renderer.setSize(w, h, false);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    camera.aspect = 16 / 9;
+    camera.updateProjectionMatrix();
+  }
+
+  function startGame() {
+    overlayStart.classList.add("hidden");
+    overlayEnd.classList.add("hidden");
+    reset();
+  }
+
+  function pointerX(e) {
+    const rect = canvas.getBoundingClientRect();
+    const px = e.touches ? e.touches[0].clientX : e.clientX;
+    return ((px - rect.left) / rect.width) * 2 - 1;
+  }
+
+  btnStart.addEventListener("click", startGame);
+  document.getElementById("btn-restart").addEventListener("click", startGame);
+  canvas.addEventListener("mousemove", (e) => { player.tx = pointerX(e) * X_LIMIT; });
+  canvas.addEventListener("touchmove", (e) => {
+    player.tx = pointerX(e) * X_LIMIT;
+    e.preventDefault();
+  }, { passive: false });
+  addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") keys.left = true;
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") keys.right = true;
+    if (e.key === "Enter" || e.key === " ") {
+      if (state.mode === "ready" || state.mode === "over") startGame();
+      e.preventDefault();
+    }
+  });
+  addEventListener("keyup", (e) => {
+    if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") keys.left = false;
+    if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") keys.right = false;
+  });
+  addEventListener("resize", fit);
+
+  fit();
+  updateHud();
+
+  let last = performance.now();
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    update(dt);
+    renderer.render(scene, camera);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
