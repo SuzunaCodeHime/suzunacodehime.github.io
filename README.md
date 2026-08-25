@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/img/SuzunaCodeHime.png" width="100" alt="SuzunaCodeHime" style="border-radius:50%">
+  <img src="./assets/img/SuzunaCodeHime.jpg" width="100" alt="SuzunaCodeHime" style="border-radius:50%">
 </p>
 
 <h1 align="center">SuzunaCodeHime の 作品集 ・ 和</h1>
@@ -123,7 +123,7 @@ python3 -m http.server 8080
 
 ### 更换分享图
 
-替换 `assets/img/SuzunaCodeHime.png`，或同步修改 `<meta property="og:image">` 的绝对地址。
+替换 `assets/img/SuzunaCodeHime.jpg`，或同步修改 `<meta property="og:image">` 的绝对地址。
 
 ## 🌐 部署
 

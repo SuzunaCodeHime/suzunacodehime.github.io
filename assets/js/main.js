@@ -6,15 +6,21 @@ const themeBtn = document.getElementById("themeToggle");
 function applyTheme(theme) {
     const isNight = theme === "night";
     root.setAttribute("data-theme", isNight ? "night" : "day");
-    localStorage.setItem("v2-theme", theme);
+    localStorage.setItem("site-theme", theme);
     themeBtn.textContent = isNight ? "☀" : "☾";
     themeBtn.title = isNight ? "回到白昼" : "切换夜樱";
 }
 
-applyTheme(localStorage.getItem("v2-theme") || "day");
+applyTheme(localStorage.getItem("site-theme") || root.getAttribute("data-theme") || "day");
 
 themeBtn.addEventListener("click", () => {
     applyTheme(root.getAttribute("data-theme") === "night" ? "day" : "night");
+});
+
+window.addEventListener("storage", (e) => {
+    if (e.key === "site-theme" && e.newValue) {
+        applyTheme(e.newValue);
+    }
 });
 
 const quotes = [

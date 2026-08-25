@@ -2,9 +2,21 @@
     "use strict";
 
     var root = document.documentElement;
-    var KEY = "tb-theme";
+    var KEY = "site-theme";
 
-    root.setAttribute("data-theme", localStorage.getItem(KEY) === "night" ? "night" : "day");
+    var t = localStorage.getItem(KEY);
+    if (!t) {
+        t = localStorage.getItem("v2-theme") || localStorage.getItem("tb-theme") || "day";
+        if (t !== "day") {
+            try { localStorage.setItem(KEY, t); } catch (e) {}
+        }
+    }
+    try {
+        localStorage.removeItem("v2-theme");
+        localStorage.removeItem("tb-theme");
+    } catch (e) {}
+
+    root.setAttribute("data-theme", t === "night" ? "night" : "day");
 
     function inject() {
         var btn = document.createElement("button");
@@ -35,6 +47,13 @@
         });
         btn.addEventListener("mouseenter", function () { btn.style.transform = "translateY(-3px)"; });
         btn.addEventListener("mouseleave", function () { btn.style.transform = ""; });
+
+        window.addEventListener("storage", function (e) {
+            if (e.key === KEY && e.newValue) {
+                root.setAttribute("data-theme", e.newValue);
+                paint();
+            }
+        });
 
         paint();
         document.body.appendChild(btn);
