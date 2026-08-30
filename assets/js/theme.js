@@ -12,4 +12,5 @@
         localStorage.removeItem("tb-theme");
     } catch (e) {}
     document.documentElement.setAttribute("data-theme", t === "night" ? "night" : "day");
+    document.documentElement.classList.add("js");
 })();

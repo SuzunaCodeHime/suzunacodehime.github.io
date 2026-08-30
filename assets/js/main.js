@@ -13,6 +13,10 @@ function applyTheme(theme) {
 
 applyTheme(localStorage.getItem("site-theme") || root.getAttribute("data-theme") || "day");
 
+const month = new Date().getMonth();
+const season = month >= 2 && month <= 4 ? "spring" : month >= 5 && month <= 7 ? "summer" : month >= 8 && month <= 10 ? "autumn" : "winter";
+root.setAttribute("data-season", season);
+
 themeBtn.addEventListener("click", () => {
     applyTheme(root.getAttribute("data-theme") === "night" ? "day" : "night");
 });
@@ -110,4 +114,67 @@ if (!reducedMotion && !isTouch) {
             ).onfinish = () => s.remove();
         }
     });
+}
+
+if (root.classList.contains("js")) {
+    const revealer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("in");
+                    revealer.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.12 }
+    );
+    document.querySelectorAll(".rise").forEach((el) => revealer.observe(el));
+
+    const stagger = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const siblings = [...entry.target.parentElement.children];
+                    entry.target.style.transitionDelay = siblings.indexOf(entry.target) * 0.12 + "s";
+                    entry.target.classList.add("in");
+                    stagger.unobserve(entry.target);
+                }
+            });
+        },
+        { threshold: 0.2 }
+    );
+    document.querySelectorAll(".work-list > li, .rank-list > li, .contact-list > li").forEach((el) => stagger.observe(el));
+}
+
+if (!reducedMotion && !isTouch) {
+    let mx = 0, my = 0, sy = 0, queued = false;
+
+    const writeVars = () => {
+        queued = false;
+        root.style.setProperty("--mx", mx.toFixed(3));
+        root.style.setProperty("--my", my.toFixed(3));
+        root.style.setProperty("--sy", sy.toFixed(3));
+    };
+
+    const requestWrite = () => {
+        if (!queued) {
+            queued = true;
+            requestAnimationFrame(writeVars);
+        }
+    };
+
+    window.addEventListener("mousemove", (e) => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 2;
+        my = (e.clientY / window.innerHeight - 0.5) * 2;
+        requestWrite();
+    });
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            sy = Math.min(window.scrollY / 700, 1);
+            requestWrite();
+        },
+        { passive: true }
+    );
 }

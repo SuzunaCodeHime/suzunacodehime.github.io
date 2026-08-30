@@ -64,12 +64,11 @@ suzunacodehime.github.io/
 │   │   ├── theme.js            # 夜樱模式防闪烁初始化
 │   │   └── main.js             # 全部交互逻辑
 │   └── img/
-│       └── SuzunaCodeHime.png  # 头像 / OG 分享图
+│       └── SuzunaCodeHime.jpg  # 头像 / OG 分享图
 ├── projects/               # 作品文件（本地路径访问）
 │   ├── Class-Attendance-System/  # 课堂点名系统
 │   ├── 2048/                     # 2048 小游戏
-│   ├── Tool_Box/                 # 工具箱
-│   └── cyberpunk-site/           # 赛博朋克演示站
+│   └── Tool_Box/                 # 工具箱
 └── README.md
 ```
 
